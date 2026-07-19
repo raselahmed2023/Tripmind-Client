@@ -4,7 +4,7 @@ export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold text-slate-900">Privacy Policy</h1>
-      <p className="mt-2 text-sm text-slate-500">Last updated: January 1, 2025</p>
+      <p className="mt-2 text-sm text-slate-500">Last updated: July 1, 2026</p>
 
       <div className="mt-8 space-y-8 text-sm leading-relaxed text-slate-600">
         <section>
@@ -27,9 +27,9 @@ export default function PrivacyPage() {
           <ul className="list-disc space-y-2 pl-5">
             <li>To provide and maintain the TripMind service.</li>
             <li>To generate personalized travel itineraries using AI.</li>
-            <li>To process payments and manage subscriptions.</li>
+            <li>To process one-time Trip Plan payments.</li>
             <li>To send service-related communications (account security, billing, updates).</li>
-            <li>To improve our AI models and user experience (using aggregated, anonymized data).</li>
+            <li>To improve the overall service quality and user experience.</li>
             <li>To detect and prevent fraud, abuse, and security incidents.</li>
           </ul>
         </section>

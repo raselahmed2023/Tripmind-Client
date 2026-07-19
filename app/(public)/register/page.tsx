@@ -151,7 +151,7 @@ function RegisterPageInner() {
                   icon: Compass,
                   text: "Discover destinations you never knew",
                 },
-                { icon: Globe, text: "Track every expense in real time" },
+                { icon: Globe, text: "Budget-aware itinerary planning" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-3">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15">

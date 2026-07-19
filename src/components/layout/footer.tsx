@@ -16,38 +16,44 @@ export function Footer() {
               AI-powered trip planning for the modern traveler.
             </p>
             <ul className="mt-4 space-y-1.5">
-              <li>
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary-500 transition-colors"
-                  aria-label={`Email us at ${CONTACT_EMAIL}`}
-                >
-                  <Mail className="h-3.5 w-3.5" />
-                  {CONTACT_EMAIL}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={GITHUB_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-slate-500 hover:text-primary-500 transition-colors"
-                  aria-label="TripMind on GitHub (opens in a new tab)"
-                >
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a
-                  href={LINKEDIN_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-slate-500 hover:text-primary-500 transition-colors"
-                  aria-label="TripMind on LinkedIn (opens in a new tab)"
-                >
-                  LinkedIn
-                </a>
-              </li>
+              {CONTACT_EMAIL && (
+                <li>
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-primary-500 transition-colors"
+                    aria-label={`Email us at ${CONTACT_EMAIL}`}
+                  >
+                    <Mail className="h-3.5 w-3.5" />
+                    {CONTACT_EMAIL}
+                  </a>
+                </li>
+              )}
+              {GITHUB_URL && (
+                <li>
+                  <a
+                    href={GITHUB_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-slate-500 hover:text-primary-500 transition-colors"
+                    aria-label="GitHub (opens in a new tab)"
+                  >
+                    GitHub
+                  </a>
+                </li>
+              )}
+              {LINKEDIN_URL && (
+                <li>
+                  <a
+                    href={LINKEDIN_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-slate-500 hover:text-primary-500 transition-colors"
+                    aria-label="LinkedIn (opens in a new tab)"
+                  >
+                    LinkedIn
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 

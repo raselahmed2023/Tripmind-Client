@@ -55,9 +55,14 @@ function LoginPageInner() {
     [isLoggingIn, loginWithRedirect, redirectTo]
   );
 
-  const handleDemoLogin = () => {
+  const handleDemoUser = () => {
     setValue("email", "demo@tripmind.ai", { shouldValidate: true });
     setValue("password", "Demo123!", { shouldValidate: true });
+  };
+
+  const handleDemoAdmin = () => {
+    setValue("email", "admin@tripmind.ai", { shouldValidate: true });
+    setValue("password", "Admin123!", { shouldValidate: true });
   };
 
   return (
@@ -82,7 +87,7 @@ function LoginPageInner() {
               {[
                 { icon: Brain, text: "AI-generated daily itineraries" },
                 { icon: Compass, text: "Personalized destination picks" },
-                { icon: Globe, text: "Real-time budget tracking" },
+                { icon: Globe, text: "Budget-aware itinerary planning" },
               ].map((item) => (
                 <div key={item.text} className="flex items-center gap-3">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15">
@@ -231,15 +236,24 @@ function LoginPageInner() {
                   Sign in with your Google account
                 </p>
 
-                <div className="mt-6 text-center">
+                <div className="mt-6 flex flex-col gap-2">
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={handleDemoLogin}
+                    onClick={handleDemoUser}
                     disabled={isLoggingIn}
                   >
-                    Try demo account
+                    Try demo user
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleDemoAdmin}
+                    disabled={isLoggingIn}
+                  >
+                    Try demo admin
                   </Button>
                 </div>
 

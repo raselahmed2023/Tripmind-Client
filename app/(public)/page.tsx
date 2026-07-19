@@ -160,7 +160,7 @@ const faqItems = [
   },
   {
     question: "What destinations does TripMind support?",
-    answer: "TripMind covers destinations worldwide. Our growing database includes information for cities, beaches, mountains, and cultural sites across every continent.",
+    answer: "TripMind covers a growing range of destinations. Our database includes information for cities, beaches, mountains, and cultural sites.",
   },
 ];
 

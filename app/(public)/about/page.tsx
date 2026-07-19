@@ -40,7 +40,7 @@ export default function AboutPage() {
             {[
               { icon: Brain, title: "AI-First Approach", description: "Every feature is built with intelligent automation at its core, not as an afterthought." },
               { icon: Users, title: "Traveler-Focused", description: "Built by travelers, for travelers. We understand the pain points because we have experienced them." },
-              { icon: Globe, title: "Global Reach", description: "Destinations across every continent, with local insights that generic platforms miss." },
+              { icon: Globe, title: "Growing Destination Database", description: "A curated and expanding collection of destinations, with local insights that generic platforms miss." },
               { icon: Shield, title: "Privacy & Security", description: "Your data is encrypted and never sold. We only use it to improve your experience." },
               { icon: Heart, title: "Honest Recommendations", description: "No paid placements or sponsored content. Our AI recommends what is genuinely best for you." },
               { icon: Target, title: "Budget Transparency", description: "Real cost estimates based on current data, so there are no surprises when you arrive." },
@@ -88,23 +88,23 @@ export default function AboutPage() {
           <ul className="mt-4 space-y-3 text-base text-slate-600">
             <li className="flex items-start gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-              Researches destinations using multiple data sources for accuracy
+              Generates personalized day-by-day itineraries based on your destination, budget, and preferences
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-              Optimizes budgets across accommodation, food, transport, and activities
+              Allocates budgets across accommodation, food, transport, and activities
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-              Considers real-world constraints like opening hours and distances
+              Accounts for practical constraints like travel distances and scheduling
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-              Adapts recommendations based on seasonal factors and your preferences
+              Adapts recommendations based on seasonal factors and your stated preferences
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-              Learns from traveler feedback to improve future recommendations
+              Maintains conversation context across your planning session for coherent, evolving plans
             </li>
           </ul>
         </section>

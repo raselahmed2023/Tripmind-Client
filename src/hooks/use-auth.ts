@@ -51,7 +51,6 @@ export function useAuth() {
     onSuccess: (data) => {
       setToken(data.accessToken);
       queryClient.setQueryData(AUTH_QUERY_KEY, data.user);
-      router.push("/dashboard");
     },
   });
 
@@ -118,9 +117,7 @@ export function useAuth() {
     loginWithRedirect: (data: LoginRequest, redirectTo?: string | null) => {
       loginMutation.mutate(data, {
         onSuccess: () => {
-          if (redirectTo) {
-            router.push(redirectTo);
-          }
+          router.push(redirectTo || "/dashboard");
         },
       });
     },

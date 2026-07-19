@@ -4,8 +4,8 @@ export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
 export const CONTACT_EMAIL =
-  process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hello@tripmind.ai";
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL || "";
 export const GITHUB_URL =
-  process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/tripmind";
+  process.env.NEXT_PUBLIC_GITHUB_URL || "";
 export const LINKEDIN_URL =
-  process.env.NEXT_PUBLIC_LINKEDIN_URL || "https://linkedin.com/company/tripmind";
+  process.env.NEXT_PUBLIC_LINKEDIN_URL || "";
