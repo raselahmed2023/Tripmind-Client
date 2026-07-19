@@ -10,7 +10,6 @@ import {
   StatCards,
   RecentTrips,
   UpcomingTrip,
-  SubscriptionCard,
   NotificationsPreview,
   QuickActions,
   TripsChart,
@@ -23,18 +22,15 @@ export default function DashboardPage() {
     trips: tripsResult,
     notifications: notificationsResult,
     unreadCount: unreadCountResult,
-    subscription: subscriptionResult,
     isError: hasError,
   } = useDashboardData();
 
   const tripList = tripsResult.data?.data ?? [];
   const notifications = notificationsResult.data?.data ?? [];
   const unreadCount = unreadCountResult.data ?? 0;
-  const subscription = subscriptionResult.data ?? undefined;
   const tripsLoading = tripsResult.isLoading;
   const tripsError = tripsResult.error;
   const notificationsLoading = notificationsResult.isLoading;
-  const subscriptionLoading = subscriptionResult.isLoading;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -62,8 +58,7 @@ export default function DashboardPage() {
         <StatCards
           trips={tripList}
           unreadCount={unreadCount}
-          subscription={subscription}
-          isLoading={tripsLoading || subscriptionLoading}
+          isLoading={tripsLoading}
         />
       </section>
 
@@ -85,12 +80,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <section aria-label="Subscription">
-          <SubscriptionCard
-            subscription={subscription}
-            isLoading={subscriptionLoading}
-          />
-        </section>
         <section aria-label="Notifications">
           <NotificationsPreview
             notifications={notifications}

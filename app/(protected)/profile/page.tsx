@@ -6,13 +6,11 @@ import {
   Mail,
   Shield,
   Calendar,
-  CreditCard,
-  Sparkles,
   Map,
   ArrowRight,
 } from "lucide-react";
 import { Card, CardContent, Badge, Button } from "@/components/ui";
-import { useAuth, useSubscription, useTrips } from "@/hooks";
+import { useAuth, useTrips } from "@/hooks";
 
 function getInitials(name: string): string {
   return name
@@ -25,7 +23,6 @@ function getInitials(name: string): string {
 
 export default function ProfilePage() {
   const { user } = useAuth();
-  const { data: subscription } = useSubscription();
   const { data: tripsData } = useTrips({ limit: 100 });
 
   if (!user) return null;
@@ -102,71 +99,6 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Subscription Card */}
-      <div className="mb-6">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="flex items-center gap-2 font-semibold text-slate-900">
-                <CreditCard className="h-5 w-5 text-primary-500" />
-                Subscription
-              </h3>
-              <Link href="/billing">
-                <Button variant="ghost" size="sm">
-                  Manage <ArrowRight className="ml-1 h-3 w-3" />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-[var(--radius-md)] bg-slate-50 p-3">
-                <p className="text-xs font-medium uppercase text-slate-500">Plan</p>
-                <p className="mt-1 text-sm font-semibold capitalize text-slate-900">
-                  {subscription?.plan || "Free"}
-                </p>
-              </div>
-              <div className="rounded-[var(--radius-md)] bg-slate-50 p-3">
-                <p className="text-xs font-medium uppercase text-slate-500">Status</p>
-                <Badge
-                  variant={subscription?.status === "active" ? "success" : "default"}
-                  className="mt-1"
-                >
-                  {subscription?.status || "active"}
-                </Badge>
-              </div>
-              <div className="rounded-[var(--radius-md)] bg-slate-50 p-3">
-                <p className="text-xs font-medium uppercase text-slate-500">AI Credits</p>
-                <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-900">
-                  <Sparkles className="h-3.5 w-3.5 text-primary-500" />
-                  {subscription?.aiCredits ?? 0} remaining
-                </p>
-              </div>
-              {subscription?.currentPeriodEnd && (
-                <div className="rounded-[var(--radius-md)] bg-slate-50 p-3">
-                  <p className="text-xs font-medium uppercase text-slate-500">
-                    {subscription?.cancelAtPeriodEnd ? "Cancels" : "Renews"}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">
-                    {new Date(subscription.currentPeriodEnd).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {(!subscription || subscription.plan === "free") && (
-              <Link href="/pricing" className="mt-4 block">
-                <Button variant="outline" className="w-full" leftIcon={<CreditCard className="h-4 w-4" />}>
-                  Upgrade Plan
-                </Button>
-              </Link>
-            )}
           </CardContent>
         </Card>
       </div>

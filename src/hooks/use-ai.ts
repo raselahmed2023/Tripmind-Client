@@ -9,9 +9,7 @@ const TRIPS_QUERY_KEY = ["trips"] as const;
 const DASHBOARD_TRIPS_KEY = ["dashboard", "trips"] as const;
 const DASHBOARD_NOTIFICATIONS_KEY = ["dashboard", "notifications"] as const;
 const DASHBOARD_UNREAD_KEY = ["dashboard", "unread-count"] as const;
-const DASHBOARD_SUBSCRIPTION_KEY = ["dashboard", "subscription"] as const;
 const NOTIFICATIONS_QUERY_KEY = ["notifications"] as const;
-const SUBSCRIPTION_QUERY_KEY = ["subscription", "me"] as const;
 
 function getAiFriendlyError(error: unknown): string {
   const apiError = error as ApiError;
@@ -22,7 +20,7 @@ function getAiFriendlyError(error: unknown): string {
     return "Too many requests. Please wait a moment and try again.";
   }
   if (apiError?.status === 402) {
-    return "You don't have enough AI credits. Please upgrade your plan.";
+    return "Please purchase the AI Trip Plan for this trip before generating an itinerary.";
   }
   if (apiError?.status === 409) {
     return "An itinerary is already being generated for this trip. Please wait.";
@@ -34,7 +32,7 @@ function getAiFriendlyError(error: unknown): string {
     return "Trip not found. Please make sure the trip exists.";
   }
   if (apiError?.status && apiError.status >= 500) {
-    return "The AI service is temporarily unavailable. Please try again later.";
+    return "The AI planning service is temporarily busy. Please try again shortly.";
   }
   if (apiError?.errors) {
     const firstError = Object.values(apiError.errors)[0];
@@ -73,8 +71,6 @@ export function useGenerateItinerary() {
       queryClient.invalidateQueries({ queryKey: DASHBOARD_NOTIFICATIONS_KEY });
       queryClient.invalidateQueries({ queryKey: DASHBOARD_UNREAD_KEY });
       queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY });
-      queryClient.invalidateQueries({ queryKey: SUBSCRIPTION_QUERY_KEY });
-      queryClient.invalidateQueries({ queryKey: DASHBOARD_SUBSCRIPTION_KEY });
     },
   });
 }

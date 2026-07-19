@@ -318,10 +318,7 @@ export type NotificationType =
   | "budget_warning"
   | "itinerary_finalized"
   | "payment_completed"
-  | "payment_failed"
-  | "subscription_activated"
-  | "subscription_cancelled"
-  | "ai_credits_added";
+  | "payment_failed";
 
 export type RelatedEntityType = "trip" | "itinerary" | "destination" | "system";
 
@@ -348,67 +345,28 @@ export interface NotificationQueryParams {
 }
 
 // ============================================================
-// Subscriptions (matches backend exactly)
+// Trip Plan Payments (matches backend exactly)
 // ============================================================
 
-export type SubscriptionPlan = "free" | "pro_monthly";
+export type TripPlanPaymentStatusType = "pending" | "paid" | "failed" | "cancelled" | "refunded";
 
-export type SubscriptionStatus = "active" | "past_due" | "cancelled" | "expired";
-
-export interface Subscription {
-  _id: string;
-  userId: string;
-  stripeCustomerId: string | null;
-  stripeSubscriptionId: string | null;
-  plan: SubscriptionPlan;
-  status: SubscriptionStatus;
-  startsAt: string | null;
-  currentPeriodEnd: string | null;
-  cancelAtPeriodEnd: boolean;
-  aiCredits: number;
-  createdAt: string;
-  updatedAt: string;
+export interface TripPlanPaymentStatus {
+  tripId: string;
+  isPlanPurchased: boolean;
+  paymentStatus: TripPlanPaymentStatusType | null;
+  purchasedAt: string | null;
 }
 
-// ============================================================
-// Payments (matches backend exactly)
-// ============================================================
-
-export type ProductType = "subscription" | "credit_pack";
-
-export type PaymentPlan = "pro_monthly" | "ai_credits_10";
-
-export type PaymentStatus = "pending" | "paid" | "failed" | "cancelled" | "refunded";
-
-export interface Payment {
-  _id: string;
-  userId: string;
-  stripeCheckoutSessionId: string | null;
-  stripePaymentIntentId: string | null;
-  stripeCustomerId: string | null;
-  stripeSubscriptionId: string | null;
-  productType: ProductType;
-  plan: PaymentPlan;
-  amount: number;
-  currency: string;
-  status: PaymentStatus;
-  metadata: Record<string, unknown>;
-  paidAt: string | null;
-  createdAt: string;
-  updatedAt: string;
+export interface TripPlanCheckoutResponse {
+  checkoutUrl: string;
+  sessionId?: string;
 }
 
-export interface CreateCheckoutSessionRequest {
-  productType: ProductType;
-}
-
-export interface CreateCheckoutSessionResponse {
-  sessionId: string;
-  url: string;
-}
-
-export interface CreatePortalSessionResponse {
-  url: string;
+export interface TripPlanVerificationResponse {
+  tripId: string;
+  isPlanPurchased: boolean;
+  paymentStatus: TripPlanPaymentStatusType;
+  purchasedAt: string | null;
 }
 
 // ============================================================

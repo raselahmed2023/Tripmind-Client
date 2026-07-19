@@ -30,11 +30,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
-                  Pricing
-                </Link>
-              </li>
-              <li>
                 <Link href="/ai-assistant" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
                   AI Assistant
                 </Link>

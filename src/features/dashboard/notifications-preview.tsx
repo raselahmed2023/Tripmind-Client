@@ -44,7 +44,6 @@ function getNotificationIcon(type: Notification["type"]) {
     case "trip_updated":
     case "itinerary_finalized":
     case "payment_completed":
-    case "ai_credits_added":
       return <CheckCircle className="h-4 w-4 text-green-500" />;
     case "ai_generation_failed":
     case "payment_failed":

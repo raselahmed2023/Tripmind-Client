@@ -5,8 +5,7 @@ import Link from "next/link";
 import {
   Settings,
   Bell,
-  CreditCard,
-  ExternalLink,
+  User,
   FileText,
   Shield,
   LogOut,
@@ -149,12 +148,6 @@ export default function SettingsPage() {
           <h2 className="font-semibold text-slate-900">Account</h2>
         </div>
         <CardContent className="space-y-3 pt-4">
-          <Link href="/billing" className="block">
-            <Button variant="outline" className="w-full justify-start" leftIcon={<CreditCard className="h-4 w-4" />}>
-              Billing & Subscription
-              <ExternalLink className="ml-auto h-4 w-4 text-slate-400" />
-            </Button>
-          </Link>
           <Link href="/profile" className="block">
             <Button variant="outline" className="w-full justify-start" leftIcon={<User className="h-4 w-4" />}>
               Edit Profile
@@ -192,14 +185,5 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function User(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
   );
 }

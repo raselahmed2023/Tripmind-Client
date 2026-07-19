@@ -9,12 +9,12 @@ import type {
 
 export const assistantService = {
   async createConversation(data: CreateConversationRequest): Promise<Conversation> {
-    const response = await apiClient.post("/assistant/conversations", data);
+    const response = await apiClient.post("/ai-assistant/conversations", data);
     return normalizeConversation(response.data);
   },
 
   async getConversations(params?: { page?: number; limit?: number }): Promise<PaginatedResult<Conversation>> {
-    const response = await apiClient.get("/assistant/conversations", { params });
+    const response = await apiClient.get("/ai-assistant/conversations", { params });
     const result = normalizePaginated<unknown>(response.data);
     return {
       ...result,
@@ -23,19 +23,19 @@ export const assistantService = {
   },
 
   async getConversation(id: string): Promise<Conversation> {
-    const response = await apiClient.get(`/assistant/conversations/${id}`);
+    const response = await apiClient.get(`/ai-assistant/conversations/${id}`);
     return normalizeConversation(response.data);
   },
 
   async deleteConversation(id: string): Promise<void> {
-    await apiClient.delete(`/assistant/conversations/${id}`);
+    await apiClient.delete(`/ai-assistant/conversations/${id}`);
   },
 
   async getMessages(
     conversationId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PaginatedResult<AssistantMessage>> {
-    const response = await apiClient.get(`/assistant/conversations/${conversationId}/messages`, { params });
+    const response = await apiClient.get(`/ai-assistant/conversations/${conversationId}/messages`, { params });
     const result = normalizePaginated<unknown>(response.data);
     return {
       ...result,
@@ -47,7 +47,7 @@ export const assistantService = {
     conversationId: string,
     data: SendMessageRequest
   ): Promise<{ userMessage: AssistantMessage; assistantMessage: AssistantMessage }> {
-    const response = await apiClient.post(`/assistant/conversations/${conversationId}/messages`, data);
+    const response = await apiClient.post(`/ai-assistant/conversations/${conversationId}/messages`, data);
     const body = normalizeSingle<{ userMessage: unknown; assistantMessage: unknown }>(response.data);
     return {
       userMessage: normalizeAssistantMessage(body.userMessage),

@@ -16,7 +16,6 @@ import {
   Bot,
   Target,
   TrendingUp,
-  Users,
   Plane,
   Mountain,
   Building2,
@@ -99,25 +98,25 @@ const aiFeatures = [
 
 const testimonials = [
   {
-    name: "Sarah Chen",
-    role: "Solo Traveler",
-    content: "TripMind saved me hours of planning. The AI itinerary was spot-on — it found hidden gems I never would have discovered on my own.",
+    name: "Solo Explorer",
+    role: "Illustrative Travel Scenario",
+    content: "Discover hidden gems with AI-powered itineraries that adapt to your interests and budget, whether you're exploring a new city or venturing off the beaten path.",
     rating: 5,
-    avatar: "SC",
+    avatar: "SE",
   },
   {
-    name: "Marcus Johnson",
-    role: "Family Vacation",
-    content: "Planning a family trip with three kids used to be stressful. TripMind balanced everyone's interests and kept us under budget.",
+    name: "Family Vacationer",
+    role: "Illustrative Travel Scenario",
+    content: "Plan trips that balance everyone's interests — from kid-friendly activities to adult excursions — all within your budget constraints.",
     rating: 5,
-    avatar: "MJ",
+    avatar: "FV",
   },
   {
-    name: "Elena Rodriguez",
-    role: "Digital Nomad",
-    content: "As someone who travels constantly, the AI assistant feature is a game-changer. It feels like having a local guide in every city.",
+    name: "Digital Nomad",
+    role: "Illustrative Travel Scenario",
+    content: "Chat with an AI travel assistant to refine plans, get local recommendations, and adapt your itinerary in real-time as you travel.",
     rating: 5,
-    avatar: "ER",
+    avatar: "DN",
   },
 ];
 
@@ -148,8 +147,8 @@ const faqItems = [
     answer: "Our AI analyzes your destination, preferences, budget, and travel dates to create a personalized day-by-day itinerary. It considers factors like opening hours, distances, weather forecasts, and local events to optimize your schedule.",
   },
   {
-    question: "Is TripMind free to use?",
-    answer: "Yes! TripMind offers a free plan with 3 AI itinerary generations, basic trip planning, and destination exploration. For more features, check out our Pro plan at $19/month.",
+    question: "How much does TripMind cost?",
+    answer: "TripMind charges a one-time payment per trip plan for AI itinerary generation. There are no subscriptions or recurring fees. Each trip plan gives you access to AI-powered itinerary creation and the travel assistant.",
   },
   {
     question: "Can I modify the AI-generated itinerary?",
@@ -496,9 +495,9 @@ export default function HomePage() {
           >
             {[
               { icon: Globe, value: "500+", label: "Destinations" },
-              { icon: Users, value: "10,000+", label: "Travelers" },
-              { icon: Route, value: "25,000+", label: "Itineraries Generated" },
-              { icon: Star, value: "4.9", label: "Average Rating" },
+              { icon: Sparkles, value: "AI-Powered", label: "Itinerary Generation" },
+              { icon: Route, value: "Custom", label: "Day-by-Day Plans" },
+              { icon: Star, value: "Real-time", label: "Budget Optimization" },
             ].map((stat) => (
               <motion.div key={stat.label} variants={fadeUp} className="text-center">
                 <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary-50">
@@ -523,10 +522,10 @@ export default function HomePage() {
             className="text-center"
           >
             <motion.h2 variants={fadeUp} className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              What Travelers Say
+              Travel Scenarios
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-              Join thousands of happy travelers who plan their trips with TripMind.
+              See how TripMind helps different types of travelers plan their perfect trips.
             </motion.p>
           </motion.div>
 
@@ -670,7 +669,7 @@ export default function HomePage() {
               Ready to Plan Your Next Adventure?
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-2xl text-lg text-primary-100">
-              Join thousands of travelers who trust TripMind to create their perfect itineraries. Start free today.
+              Create personalized AI itineraries, optimize your budget, and travel with confidence. Start planning today.
             </motion.p>
             <motion.div variants={fadeUp} className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link href="/register">

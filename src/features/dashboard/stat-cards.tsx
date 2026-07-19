@@ -2,17 +2,14 @@ import {
   MapPin,
   Calendar,
   CheckCircle,
-  Sparkles,
   Bell,
-  CreditCard,
 } from "lucide-react";
-import type { Trip, Subscription } from "@/types";
+import type { Trip } from "@/types";
 import { StatCard } from "./stat-card";
 
 interface StatCardsProps {
   trips: Trip[];
   unreadCount: number;
-  subscription?: Subscription;
   isLoading: boolean;
 }
 
@@ -31,17 +28,14 @@ function getCompletedCount(trips: Trip[]): number {
 export function StatCards({
   trips,
   unreadCount,
-  subscription,
   isLoading,
 }: StatCardsProps) {
   const totalTrips = trips.length;
   const upcoming = getUpcomingCount(trips);
   const completed = getCompletedCount(trips);
-  const credits = subscription?.aiCredits ?? 0;
-  const planName = subscription?.plan === "pro_monthly" ? "Pro" : "Free";
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <StatCard
         icon={<MapPin className="h-5 w-5" />}
         label="Total Trips"
@@ -67,29 +61,11 @@ export function StatCards({
         isLoading={isLoading}
       />
       <StatCard
-        icon={<Sparkles className="h-5 w-5" />}
-        label="AI Credits"
-        value={credits}
-        description="Available this period"
-        accent="primary"
-        isLoading={isLoading}
-      />
-      <StatCard
         icon={<Bell className="h-5 w-5" />}
         label="Unread"
         value={unreadCount}
         description="New notifications"
         accent="secondary"
-        isLoading={isLoading}
-      />
-      <StatCard
-        icon={<CreditCard className="h-5 w-5" />}
-        label="Plan"
-        value={planName}
-        description={
-          subscription?.status === "active" ? "Active subscription" : "Current plan"
-        }
-        accent="accent"
         isLoading={isLoading}
       />
     </div>

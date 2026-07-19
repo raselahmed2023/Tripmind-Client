@@ -14,17 +14,17 @@ import {
   Shield,
   Loader2,
   CheckCheck,
+  Bot,
+  Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import {
   useAuth,
-  useSubscription,
   useUnreadNotificationCount,
   useRecentNotifications,
   useMarkNotificationRead,
 } from "@/hooks";
 import { UserMenu } from "@/components/auth/user-menu";
-import { CreditsDisplay } from "@/features/itinerary";
 import { cn } from "@/utils";
 
 interface NavLink {
@@ -36,7 +36,6 @@ interface NavLink {
 const loggedOutLinks: NavLink[] = [
   { href: "/", label: "Home", icon: <MapPin className="h-4 w-4" /> },
   { href: "/explore", label: "Explore", icon: <Compass className="h-4 w-4" /> },
-  { href: "/pricing", label: "Pricing", icon: <Route className="h-4 w-4" /> },
   { href: "/about", label: "About", icon: <Route className="h-4 w-4" /> },
 ];
 
@@ -44,8 +43,8 @@ const loggedInLinks: NavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: <MapPin className="h-4 w-4" /> },
   { href: "/explore", label: "Explore", icon: <Compass className="h-4 w-4" /> },
   { href: "/trips", label: "My Trips", icon: <Map className="h-4 w-4" /> },
-  { href: "/ai-assistant", label: "AI Assistant", icon: <Route className="h-4 w-4" /> },
-  { href: "/pricing", label: "Pricing", icon: <Compass className="h-4 w-4" /> },
+  { href: "/trips/create", label: "AI Trip Planner", icon: <Plus className="h-4 w-4" /> },
+  { href: "/ai-assistant", label: "AI Assistant", icon: <Bot className="h-4 w-4" /> },
 ];
 
 const adminLinks: NavLink[] = [
@@ -184,7 +183,6 @@ function NotificationBell() {
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, isAdmin, logout, isLoggingOut } = useAuth();
-  const { data: subscription } = useSubscription();
   const pathname = usePathname();
 
   const navLinks = isAuthenticated ? loggedInLinks : loggedOutLinks;
@@ -237,12 +235,6 @@ export function Navbar() {
         <div className="hidden lg:flex lg:items-center lg:gap-3">
           {isAuthenticated ? (
             <>
-              {subscription && (
-                <CreditsDisplay
-                  remaining={subscription.aiCredits}
-                  total={subscription.aiCredits + 1}
-                />
-              )}
               <NotificationBell />
               <UserMenu />
             </>
@@ -347,15 +339,6 @@ export function Navbar() {
                     </p>
                   </div>
                 </div>
-                {subscription && (
-                  <div className="px-3 py-1">
-                    <CreditsDisplay
-                      remaining={subscription.aiCredits}
-                      total={subscription.aiCredits + 1}
-                      size="sm"
-                    />
-                  </div>
-                )}
                 <div className="flex gap-2">
                   <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="flex-1">
                     <Button variant="outline" size="sm" className="w-full">

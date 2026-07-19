@@ -18,11 +18,23 @@ import {
   Ban,
   BookOpen,
   Sparkles,
+  CreditCard,
+  Loader2,
+  CheckCircle,
 } from "lucide-react";
 import { Button, Card, CardContent } from "@/components/ui";
 import { TripStatusBadge } from "@/components/trip";
-import { useTrip, useUpdateTrip, useSubscription, useItinerary, useGenerateItinerary, getAiFriendlyError } from "@/hooks";
-import { ItineraryViewer, GenerationDialog, CreditsDisplay } from "@/features/itinerary";
+import {
+  useTrip,
+  useUpdateTrip,
+  useItinerary,
+  useGenerateItinerary,
+  useTripPlanStatus,
+  useCreateTripPlanCheckout,
+  getAiFriendlyError,
+} from "@/hooks";
+import { getTripPlanPaymentError } from "@/hooks/use-trip-plan-payments";
+import { ItineraryViewer } from "@/features/itinerary";
 import { DeleteTripModal } from "./delete-trip-modal";
 import type { TripStatus } from "@/types";
 
@@ -50,16 +62,14 @@ export function TripDetail({ tripId }: TripDetailProps) {
   const router = useRouter();
   const { data: trip, isLoading, error, refetch } = useTrip(tripId);
   const updateTrip = useUpdateTrip();
-  const { data: subscription } = useSubscription();
   const { data: itinerary } = useItinerary(trip?.itineraryId);
   const generateMutation = useGenerateItinerary();
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showGenerateDialog, setShowGenerateDialog] = useState(false);
-  const [showItinerary, setShowItinerary] = useState(false);
+  const { data: paymentStatus, isLoading: paymentLoading } = useTripPlanStatus(tripId);
+  const createCheckout = useCreateTripPlanCheckout();
 
-  const creditsRemaining = subscription?.aiCredits ?? 0;
-  const creditsRequired = 1;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showItinerary, setShowItinerary] = useState(false);
 
   const handleCancel = useCallback(async () => {
     if (!trip) return;
@@ -77,16 +87,23 @@ export function TripDetail({ tripId }: TripDetailProps) {
     if (!trip) return;
     try {
       await generateMutation.mutateAsync({ tripId: trip._id });
-      setShowGenerateDialog(false);
       setShowItinerary(true);
     } catch {
       // Error handled by mutation
     }
   }, [trip, generateMutation]);
 
-  const handleRetry = useCallback(() => {
-    handleGenerate();
-  }, [handleGenerate]);
+  const handleCheckout = useCallback(async () => {
+    if (!trip) return;
+    try {
+      const result = await createCheckout.mutateAsync(trip._id);
+      if (result.checkoutUrl) {
+        window.location.assign(result.checkoutUrl);
+      }
+    } catch {
+      // Error handled by mutation
+    }
+  }, [trip, createCheckout]);
 
   if (isLoading) {
     return (
@@ -148,6 +165,10 @@ export function TripDetail({ tripId }: TripDetailProps) {
   const isEditable = trip.status !== "completed" && trip.status !== "cancelled";
   const hasItinerary = !!trip.itineraryId || !!itinerary;
   const isGenerating = generateMutation.isPending;
+
+  const isPlanPurchased = paymentStatus?.isPlanPurchased ?? false;
+  const isPaymentPending = paymentStatus?.paymentStatus === "pending";
+  const isCheckoutPending = createCheckout.isPending;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -368,17 +389,9 @@ export function TripDetail({ tripId }: TripDetailProps) {
                   ) : (
                     <div className="text-sm text-slate-600">
                       <p>No itinerary generated yet.</p>
-                      <Button
-                        className="mt-3"
-                        onClick={() => setShowGenerateDialog(true)}
-                        disabled={creditsRemaining < creditsRequired}
-                        leftIcon={<Sparkles className="h-4 w-4" />}
-                      >
-                        Generate AI Itinerary
-                      </Button>
-                      {creditsRemaining < creditsRequired && (
-                        <p className="mt-2 text-xs text-red-600">
-                          You don&apos;t have enough AI credits.
+                      {!paymentLoading && !isPlanPurchased && (
+                        <p className="mt-2 text-xs text-slate-500">
+                          Purchase the AI Trip Plan to generate a personalized itinerary.
                         </p>
                       )}
                     </div>
@@ -417,17 +430,57 @@ export function TripDetail({ tripId }: TripDetailProps) {
                     </Button>
                   </Link>
                 )}
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  leftIcon={<Sparkles className="h-4 w-4" />}
-                  onClick={() => setShowGenerateDialog(true)}
-                  disabled={isGenerating || creditsRemaining < creditsRequired}
-                  isLoading={isGenerating}
-                >
-                  {hasItinerary ? "Regenerate Itinerary" : "Generate AI Itinerary"}
-                </Button>
-                <CreditsDisplay remaining={creditsRemaining} total={(subscription?.aiCredits ?? 0) + creditsRequired} />
+
+                {/* Trip Plan Purchase / AI Generation Button */}
+                {paymentLoading ? (
+                  <Button variant="outline" className="w-full justify-start" disabled>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading...
+                  </Button>
+                ) : !isPlanPurchased ? (
+                  <>
+                    <Button
+                      className="w-full justify-start"
+                      onClick={handleCheckout}
+                      disabled={isCheckoutPending || isPaymentPending}
+                      leftIcon={isCheckoutPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
+                    >
+                      {isCheckoutPending ? "Processing..." : isPaymentPending ? "Checkout Pending..." : "Buy AI Trip Plan"}
+                    </Button>
+                    <p className="text-[11px] text-slate-400 text-center">One-time payment &middot; No subscription</p>
+                    {createCheckout.isError && (
+                      <p className="text-xs text-red-600">
+                        {getTripPlanPaymentError(createCheckout.error)}
+                      </p>
+                    )}
+                  </>
+                ) : hasItinerary ? (
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={() => setShowItinerary(true)}
+                    leftIcon={<CheckCircle className="h-4 w-4" />}
+                  >
+                    View AI Itinerary
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      className="w-full justify-start"
+                      onClick={handleGenerate}
+                      disabled={isGenerating}
+                      leftIcon={isGenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                    >
+                      {isGenerating ? "Generating..." : "Generate My AI Trip Plan"}
+                    </Button>
+                    {generateMutation.isError && (
+                      <p className="text-xs text-red-600">
+                        {getAiFriendlyError(generateMutation.error)}
+                      </p>
+                    )}
+                  </>
+                )}
+
                 {isEditable && (
                   <Button
                     variant="outline"
@@ -486,19 +539,6 @@ export function TripDetail({ tripId }: TripDetailProps) {
           </Card>
         </div>
       </div>
-
-      {/* Generation Dialog */}
-      <GenerationDialog
-        isOpen={showGenerateDialog}
-        onClose={() => setShowGenerateDialog(false)}
-        onConfirm={handleGenerate}
-        isGenerating={isGenerating}
-        error={generateMutation.error ? getAiFriendlyError(generateMutation.error) : null}
-        onRetry={handleRetry}
-        creditsRemaining={creditsRemaining}
-        creditsRequired={creditsRequired}
-        tripTitle={trip.title}
-      />
 
       <DeleteTripModal
         trip={trip}

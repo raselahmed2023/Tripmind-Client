@@ -76,7 +76,7 @@ function LoginPageInner() {
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-primary-100">
               Pick up right where you left off. Your AI-powered itineraries,
-              saved destinations, and trip insights are waiting.
+              and trip insights are waiting.
             </p>
             <div className="mt-10 space-y-4">
               {[

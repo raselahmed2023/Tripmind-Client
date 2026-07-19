@@ -1,4 +1,4 @@
-import type { PaginatedResult, Trip, Destination, Notification, Payment, Conversation, AssistantMessage } from "@/types";
+import type { PaginatedResult, Trip, Destination, Notification, Conversation, AssistantMessage } from "@/types";
 
 // ============================================================
 // Raw backend envelope shapes (what Axios returns)
@@ -135,28 +135,6 @@ export function normalizeNotification(raw: unknown): Notification {
     metadata: (n.metadata as Record<string, unknown>) || {},
     createdAt: String(n.createdAt || ""),
     updatedAt: String(n.updatedAt || ""),
-  };
-}
-
-export function normalizePayment(raw: unknown): Payment {
-  const p = normalizeSingle<Record<string, unknown>>(raw);
-
-  return {
-    _id: String(p._id || ""),
-    userId: String(p.userId || ""),
-    stripeCheckoutSessionId: p.stripeCheckoutSessionId ? String(p.stripeCheckoutSessionId) : null,
-    stripePaymentIntentId: p.stripePaymentIntentId ? String(p.stripePaymentIntentId) : null,
-    stripeCustomerId: p.stripeCustomerId ? String(p.stripeCustomerId) : null,
-    stripeSubscriptionId: p.stripeSubscriptionId ? String(p.stripeSubscriptionId) : null,
-    productType: (p.productType as Payment["productType"]) || "subscription",
-    plan: (p.plan as Payment["plan"]) || "pro_monthly",
-    amount: Number(p.amount || 0),
-    currency: String(p.currency || "usd"),
-    status: (p.status as Payment["status"]) || "pending",
-    metadata: (p.metadata as Record<string, unknown>) || {},
-    paidAt: p.paidAt ? String(p.paidAt) : null,
-    createdAt: String(p.createdAt || ""),
-    updatedAt: String(p.updatedAt || ""),
   };
 }
 

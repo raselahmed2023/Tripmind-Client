@@ -137,8 +137,8 @@ function RegisterPageInner() {
               Start planning smarter trips today
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-primary-100">
-              Join thousands of travelers using AI to build perfect
-              itineraries, optimize budgets, and discover hidden gems.
+              Build perfect itineraries with AI, optimize budgets,
+              and discover hidden gems at every destination.
             </p>
             <div className="mt-10 space-y-4">
               {[
@@ -310,9 +310,12 @@ function RegisterPageInner() {
                   variant="outline"
                   className="w-full"
                   size="lg"
-                  disabled
-                  aria-label="Google sign-in coming soon"
-                  title="Google sign-in will be connected after backend OAuth setup"
+                  onClick={() => {
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+                    const currentPath = window.location.pathname;
+                    sessionStorage.setItem("post_login_redirect", currentPath);
+                    window.location.href = `${apiUrl}/auth/google`;
+                  }}
                   leftIcon={
                     <svg className="h-5 w-5" viewBox="0 0 24 24">
                       <path
@@ -338,7 +341,7 @@ function RegisterPageInner() {
                 </Button>
 
                 <p className="mt-3 text-center text-xs text-slate-400">
-                  Google sign-in will be available after backend OAuth setup
+                  Sign in with your Google account
                 </p>
 
                 <div className="mt-6 border-t border-slate-100 pt-6 text-center">

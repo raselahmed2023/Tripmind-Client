@@ -5,8 +5,8 @@ import {
   Compass,
   Map,
   Bell,
-  CreditCard,
   MapPin,
+  Bot,
 } from "lucide-react";
 
 const actions = [
@@ -41,9 +41,9 @@ const actions = [
     color: "bg-secondary-100 text-secondary-600",
   },
   {
-    label: "Subscription",
-    href: "/settings",
-    icon: CreditCard,
+    label: "AI Assistant",
+    href: "/ai-assistant",
+    icon: Bot,
     color: "bg-accent-100 text-accent-600",
   },
 ];

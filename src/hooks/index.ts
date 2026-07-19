@@ -16,16 +16,15 @@ export {
   useDeleteNotification,
   useClearReadNotifications,
 } from "./use-notifications";
-export { useSubscription } from "./use-subscription";
 export { useDashboardData } from "./use-dashboard";
 export { useDestinations, useDestinationBySlug } from "./use-destinations";
 export { useItinerary, useGenerateItinerary, getAiFriendlyError } from "./use-ai";
 export {
-  usePayments,
-  useCreateCheckoutSession,
-  useCreatePortalSession,
-  usePaymentSuccessPoll,
-} from "./use-payments";
+  useTripPlanStatus,
+  useCreateTripPlanCheckout,
+  useVerifyTripPlanPayment,
+  getTripPlanPaymentError,
+} from "./use-trip-plan-payments";
 export {
   useAdminDestinations,
   useCreateDestination,
