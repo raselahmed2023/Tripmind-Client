@@ -240,6 +240,22 @@ export interface Destination {
   updatedAt: string;
 }
 
+export interface CreateDestinationRequest {
+  title: string;
+  shortDescription: string;
+  fullDescription: string;
+  city: string;
+  country: string;
+  averageDailyCost: number;
+  currency: string;
+  category: string;
+  rating: number;
+  bestSeason: string;
+  recommendedDays: number;
+  highlights: string[];
+  images: string[];
+}
+
 export interface DestinationQueryParams {
   page?: number;
   limit?: number;

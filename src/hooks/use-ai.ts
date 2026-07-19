@@ -40,11 +40,11 @@ function getAiFriendlyError(error: unknown): string {
   return apiError?.message || "Generation failed. Please try again.";
 }
 
-export function useItinerary(tripId: string) {
+export function useItinerary(itineraryId?: string | null) {
   return useQuery({
-    queryKey: [...ITINERARY_QUERY_KEY, tripId],
-    queryFn: () => aiService.getItinerary(tripId),
-    enabled: !!tripId,
+    queryKey: [...ITINERARY_QUERY_KEY, itineraryId],
+    queryFn: () => aiService.getItinerary(itineraryId!),
+    enabled: !!itineraryId,
     staleTime: 5 * 60 * 1000,
     retry: (failureCount, error) => {
       const status = (error as unknown as ApiError)?.status;
@@ -65,7 +65,7 @@ export function useGenerateItinerary() {
     mutationFn: aiService.generateItinerary,
     onSuccess: (data, variables) => {
       queryClient.setQueryData(
-        [...ITINERARY_QUERY_KEY, variables.tripId],
+        [...ITINERARY_QUERY_KEY, data.itinerary._id],
         data.itinerary
       );
       queryClient.invalidateQueries({ queryKey: TRIPS_QUERY_KEY });

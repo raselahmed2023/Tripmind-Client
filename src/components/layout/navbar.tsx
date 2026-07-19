@@ -43,9 +43,15 @@ const loggedOutLinks: NavLink[] = [
 const loggedInLinks: NavLink[] = [
   { href: "/dashboard", label: "Dashboard", icon: <MapPin className="h-4 w-4" /> },
   { href: "/explore", label: "Explore", icon: <Compass className="h-4 w-4" /> },
-  { href: "/planner", label: "AI Trip Planner", icon: <Route className="h-4 w-4" /> },
   { href: "/trips", label: "My Trips", icon: <Map className="h-4 w-4" /> },
+  { href: "/ai-assistant", label: "AI Assistant", icon: <Route className="h-4 w-4" /> },
   { href: "/pricing", label: "Pricing", icon: <Compass className="h-4 w-4" /> },
+];
+
+const adminLinks: NavLink[] = [
+  { href: "/admin", label: "Admin", icon: <Shield className="h-4 w-4" /> },
+  { href: "/items/add", label: "Add Item", icon: <Shield className="h-4 w-4" /> },
+  { href: "/items/manage", label: "Manage Items", icon: <Shield className="h-4 w-4" /> },
 ];
 
 function NotificationBell() {
@@ -208,18 +214,23 @@ export function Navbar() {
             </Link>
           ))}
           {isAuthenticated && isAdmin && (
-            <Link
-              href="/admin"
-              className={cn(
-                "flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium transition-colors",
-                pathname === "/admin"
-                  ? "bg-accent-50 text-accent-600"
-                  : "text-accent-600 hover:bg-accent-50"
-              )}
-            >
-              <Shield className="h-4 w-4" />
-              Admin
-            </Link>
+            <>
+              {adminLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium transition-colors",
+                    pathname === link.href
+                      ? "bg-accent-50 text-accent-600"
+                      : "text-accent-600 hover:bg-accent-50"
+                  )}
+                >
+                  {link.icon}
+                  {link.label}
+                </Link>
+              ))}
+            </>
           )}
         </nav>
 
@@ -286,19 +297,24 @@ export function Navbar() {
               </Link>
             ))}
             {isAuthenticated && isAdmin && (
-              <Link
-                href="/admin"
-                className={cn(
-                  "flex items-center gap-2 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors",
-                  pathname === "/admin"
-                    ? "bg-accent-50 text-accent-600"
-                    : "text-accent-600 hover:bg-accent-50"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Shield className="h-4 w-4" />
-                Admin
-              </Link>
+              <>
+                {adminLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "flex items-center gap-2 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors",
+                      pathname === link.href
+                        ? "bg-accent-50 text-accent-600"
+                        : "text-accent-600 hover:bg-accent-50"
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.icon}
+                    {link.label}
+                  </Link>
+                ))}
+              </>
             )}
           </nav>
 

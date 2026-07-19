@@ -15,15 +15,15 @@ export const aiService = {
     const response = await apiClient.post<
       { success: boolean; data: { itinerary: Itinerary; creditsRemaining: number } } |
       { itinerary: Itinerary; creditsRemaining: number }
-    >("/ai/generate", data);
+    >(`/ai/${data.tripId}/generate`);
     return unwrap(response.data) as { itinerary: Itinerary; creditsRemaining: number };
   },
 
-  async getItinerary(tripId: string): Promise<Itinerary | null> {
+  async getItinerary(itineraryId: string): Promise<Itinerary | null> {
     try {
       const response = await apiClient.get<
         { success: boolean; data: Itinerary } | Itinerary
-      >(`/ai/itinerary/${tripId}`);
+      >(`/itineraries/${itineraryId}`);
       return unwrap(response.data) as Itinerary;
     } catch (err) {
       const status = (err as { status?: number })?.status;

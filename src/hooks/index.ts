@@ -26,3 +26,9 @@ export {
   useCreatePortalSession,
   usePaymentSuccessPoll,
 } from "./use-payments";
+export {
+  useAdminDestinations,
+  useCreateDestination,
+  useDeleteDestination,
+  getAdminDestinationError,
+} from "./use-admin-destinations";

@@ -20,6 +20,11 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-slate-900">Product</h3>
             <ul className="mt-3 space-y-2">
               <li>
+                <Link href="/" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li>
                 <Link href="/explore" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
                   Explore
                 </Link>
@@ -30,29 +35,29 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
-                  About
+                <Link href="/ai-assistant" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                  AI Assistant
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">Account</h3>
+            <h3 className="text-sm font-semibold text-slate-900">Company</h3>
             <ul className="mt-3 space-y-2">
               <li>
-                <Link href="/dashboard" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
-                  Dashboard
+                <Link href="/about" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                  About
                 </Link>
               </li>
               <li>
-                <Link href="/trips" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
-                  My Trips
+                <Link href="/blog" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                  Blog
                 </Link>
               </li>
               <li>
-                <Link href="/billing" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
-                  Billing
+                <Link href="/contact" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                  Contact
                 </Link>
               </li>
             </ul>
@@ -69,6 +74,19 @@ export function Footer() {
               <li>
                 <Link href="/terms" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
                   Terms of Service
+                </Link>
+              </li>
+            </ul>
+            <h3 className="mt-6 text-sm font-semibold text-slate-900">Account</h3>
+            <ul className="mt-3 space-y-2">
+              <li>
+                <Link href="/login" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                  Sign In
+                </Link>
+              </li>
+              <li>
+                <Link href="/register" className="text-sm text-slate-500 hover:text-primary-500 transition-colors">
+                  Create Account
                 </Link>
               </li>
             </ul>

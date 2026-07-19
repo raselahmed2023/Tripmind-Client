@@ -3,7 +3,15 @@ import type {
   Destination,
   DestinationQueryParams,
   PaginatedResponse,
+  CreateDestinationRequest,
 } from "@/types";
+
+function unwrap<T>(body: T | { success: boolean; data: T }): T {
+  if (body && typeof body === "object" && "success" in body && "data" in body) {
+    return (body as { data: T }).data;
+  }
+  return body as T;
+}
 
 function cleanParams(
   params: DestinationQueryParams
@@ -27,11 +35,7 @@ export const destinationService = {
       params: params ? cleanParams(params) : undefined,
     });
 
-    const body = response.data;
-    if (body && typeof body === "object" && "success" in body && "data" in body) {
-      return (body as { data: PaginatedResponse<Destination> }).data;
-    }
-    return body as PaginatedResponse<Destination>;
+    return unwrap(response.data) as PaginatedResponse<Destination>;
   },
 
   async getBySlug(slug: string): Promise<Destination> {
@@ -39,10 +43,26 @@ export const destinationService = {
       Destination | { success: boolean; data: Destination }
     >(`/destinations/${slug}`);
 
-    const body = response.data;
-    if (body && typeof body === "object" && "success" in body && "data" in body) {
-      return (body as { data: Destination }).data;
-    }
-    return body as Destination;
+    return unwrap(response.data) as Destination;
+  },
+
+  async getById(id: string): Promise<Destination> {
+    const response = await apiClient.get<
+      Destination | { success: boolean; data: Destination }
+    >(`/destinations/${id}`);
+
+    return unwrap(response.data) as Destination;
+  },
+
+  async create(data: CreateDestinationRequest): Promise<Destination> {
+    const response = await apiClient.post<
+      Destination | { success: boolean; data: Destination }
+    >("/destinations", data);
+
+    return unwrap(response.data) as Destination;
+  },
+
+  async delete(id: string): Promise<void> {
+    await apiClient.delete(`/destinations/${id}`);
   },
 };

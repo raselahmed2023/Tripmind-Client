@@ -51,7 +51,7 @@ export function TripDetail({ tripId }: TripDetailProps) {
   const { data: trip, isLoading, error, refetch } = useTrip(tripId);
   const updateTrip = useUpdateTrip();
   const { data: subscription } = useSubscription();
-  const { data: itinerary } = useItinerary(tripId);
+  const { data: itinerary } = useItinerary(trip?.itineraryId);
   const generateMutation = useGenerateItinerary();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
