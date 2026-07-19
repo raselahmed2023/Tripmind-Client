@@ -1,6 +1,3 @@
-// ============================================================
-// API Response Envelope Types (backend contract source of truth)
-// ============================================================
 
 export interface ApiSuccessResponse<T = unknown> {
   success: boolean;
@@ -339,7 +336,7 @@ export interface Notification {
 export interface NotificationQueryParams {
   type?: NotificationType;
   isRead?: "true" | "false";
-  sort?: string;
+  sort?: "newest" | "oldest";
   page?: number;
   limit?: number;
 }

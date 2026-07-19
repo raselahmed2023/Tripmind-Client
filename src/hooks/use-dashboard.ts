@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueries } from "@tanstack/react-query";
-import { tripService, notificationService } from "@/services";
+import { notificationService, tripService } from "@/services";
 
 const DASHBOARD_TRIPS_KEY = ["dashboard", "trips"] as const;
 const DASHBOARD_NOTIFICATIONS_KEY = ["dashboard", "notifications"] as const;
@@ -14,16 +14,23 @@ export function useDashboardData() {
         queryKey: DASHBOARD_TRIPS_KEY,
         queryFn: () => tripService.getAll({ limit: 20 }),
         staleTime: 30 * 1000,
+        retry: 1,
       },
       {
         queryKey: DASHBOARD_NOTIFICATIONS_KEY,
-        queryFn: () => notificationService.getAll({ limit: 5, sort: "-createdAt" }),
+        queryFn: () =>
+          notificationService.getAll({
+            limit: 5,
+            sort: "newest",
+          }),
         staleTime: 30 * 1000,
+        retry: 1,
       },
       {
         queryKey: DASHBOARD_UNREAD_KEY,
         queryFn: () => notificationService.getUnreadCount(),
         staleTime: 30 * 1000,
+        retry: 1,
       },
     ],
   });
@@ -32,7 +39,7 @@ export function useDashboardData() {
     trips: results[0],
     notifications: results[1],
     unreadCount: results[2],
-    isLoading: results.some((r) => r.isLoading),
-    isError: results.some((r) => r.isError),
+    isLoading: results.some((result) => result.isLoading),
+    isError: results.some((result) => result.isError),
   };
 }
