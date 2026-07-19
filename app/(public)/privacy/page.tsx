@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CONTACT_EMAIL } from "@/lib";
 
 export default function PrivacyPage() {
   return (
@@ -51,7 +52,7 @@ export default function PrivacyPage() {
           <h2 className="mb-3 text-lg font-semibold text-slate-900">4. Data Security</h2>
           <p>
             We implement industry-standard security measures including encryption in transit (TLS),
-            encryption at rest, access controls, and regular security audits. However, no method of
+            encryption at rest, and access controls. However, no method of
             electronic transmission or storage is 100% secure, and we cannot guarantee absolute security.
           </p>
         </section>
@@ -77,8 +78,8 @@ export default function PrivacyPage() {
           </ul>
           <p className="mt-3">
             To exercise these rights, contact us at{" "}
-            <a href="mailto:privacy@tripmind.ai" className="text-primary-500 hover:text-primary-600 underline">
-              privacy@tripmind.ai
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary-500 hover:text-primary-600 underline">
+              {CONTACT_EMAIL}
             </a>.
           </p>
         </section>
@@ -105,8 +106,8 @@ export default function PrivacyPage() {
           <h2 className="mb-3 text-lg font-semibold text-slate-900">9. Contact Us</h2>
           <p>
             If you have questions about this privacy policy, contact us at{" "}
-            <a href="mailto:privacy@tripmind.ai" className="text-primary-500 hover:text-primary-600 underline">
-              privacy@tripmind.ai
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary-500 hover:text-primary-600 underline">
+              {CONTACT_EMAIL}
             </a>.
           </p>
         </section>

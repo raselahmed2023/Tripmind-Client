@@ -4,8 +4,9 @@ import { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Mail, Send, MapPin, Clock } from "lucide-react";
+import { Mail, Send, MapPin } from "lucide-react";
 import { Button, Card, CardContent, Alert } from "@/components/ui";
+import { CONTACT_EMAIL } from "@/lib";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
@@ -30,7 +31,7 @@ export default function ContactPage() {
 
   const onSubmit = useCallback(
     (data: ContactFormData) => {
-      const mailtoLink = `mailto:hello@tripmind.ai?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
+      const mailtoLink = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(
         `Name: ${data.name}\nEmail: ${data.email}\n\n${data.message}`
       )}`;
       window.location.href = mailtoLink;
@@ -59,8 +60,8 @@ export default function ContactPage() {
               {submitted && (
                 <Alert variant="success" className="mb-6">
                   Your email client should have opened with the message pre-filled. If it did not, please send your message directly to{" "}
-                  <a href="mailto:hello@tripmind.ai" className="font-medium underline">
-                    hello@tripmind.ai
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium underline">
+                    {CONTACT_EMAIL}
                   </a>
                 </Alert>
               )}
@@ -170,8 +171,8 @@ export default function ContactPage() {
                   <Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary-500" />
                   <div>
                     <p className="text-sm font-medium text-slate-900">Email</p>
-                    <a href="mailto:hello@tripmind.ai" className="text-sm text-primary-500 hover:text-primary-600">
-                      hello@tripmind.ai
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="text-sm text-primary-500 hover:text-primary-600">
+                      {CONTACT_EMAIL}
                     </a>
                   </div>
                 </div>
@@ -179,14 +180,7 @@ export default function ContactPage() {
                   <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary-500" />
                   <div>
                     <p className="text-sm font-medium text-slate-900">Location</p>
-                    <p className="text-sm text-slate-600">Remote-first company</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Clock className="mt-0.5 h-5 w-5 shrink-0 text-primary-500" />
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">Response Time</p>
-                    <p className="text-sm text-slate-600">Within 24 hours on business days</p>
+                    <p className="text-sm text-slate-600">Online — we work globally</p>
                   </div>
                 </div>
               </div>
@@ -198,7 +192,7 @@ export default function ContactPage() {
               <h3 className="text-lg font-semibold text-slate-900">Common Questions</h3>
               <ul className="mt-4 space-y-3 text-sm text-slate-600">
                 <li>
-                  <strong>Billing inquiries:</strong> Contact your payment provider or check your billing page.
+                  <strong>Payment issues:</strong> All payments are processed through Stripe. Contact your payment provider for transaction disputes.
                 </li>
                 <li>
                   <strong>Technical issues:</strong> Describe the issue in detail and include your browser info.

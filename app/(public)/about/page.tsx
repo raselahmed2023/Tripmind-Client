@@ -27,7 +27,7 @@ export default function AboutPage() {
             without the hours of research and coordination.
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Our AI-powered platform handles the heavy lifting — researching destinations,
+            Our AI-powered platform handles the heavy lifting — analyzing destinations,
             comparing options, optimizing budgets, and building day-by-day itineraries — so
             you can focus on the excitement of your upcoming adventure.
           </p>
@@ -41,9 +41,9 @@ export default function AboutPage() {
               { icon: Brain, title: "AI-First Approach", description: "Every feature is built with intelligent automation at its core, not as an afterthought." },
               { icon: Users, title: "Traveler-Focused", description: "Built by travelers, for travelers. We understand the pain points because we have experienced them." },
               { icon: Globe, title: "Growing Destination Database", description: "A curated and expanding collection of destinations, with local insights that generic platforms miss." },
-              { icon: Shield, title: "Privacy & Security", description: "Your data is encrypted and never sold. We only use it to improve your experience." },
+              { icon: Shield, title: "Privacy & Security", description: "Your data is encrypted and never sold. We only use it to provide and improve the Service." },
               { icon: Heart, title: "Honest Recommendations", description: "No paid placements or sponsored content. Our AI recommends what is genuinely best for you." },
-              { icon: Target, title: "Budget Transparency", description: "Real cost estimates based on current data, so there are no surprises when you arrive." },
+              { icon: Target, title: "Budget Transparency", description: "AI allocates your budget across categories to help you plan within your stated limits." },
             ].map((item) => (
               <div key={item.title} className="flex items-start gap-4 rounded-[var(--radius-xl)] border border-slate-200 p-5">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-primary-50">
@@ -73,9 +73,9 @@ export default function AboutPage() {
             a cohesive, actionable plan.
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Today, TripMind helps travelers trust our AI to create itineraries
-            that feel hand-crafted by a local expert. We are continuously improving our models
-            and expanding our destination database to serve you better.
+            Today, TripMind helps travelers generate itineraries
+            that are tailored to their preferences. We are expanding our destination
+            database and refining our application to serve you better.
           </p>
         </section>
 
@@ -83,7 +83,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-2xl font-bold text-slate-900">Our Technology</h2>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            TripMind uses agentic AI that goes beyond simple template filling. Our system:
+            TripMind uses AI-powered planning that goes beyond simple template filling. The application:
           </p>
           <ul className="mt-4 space-y-3 text-base text-slate-600">
             <li className="flex items-start gap-3">
@@ -107,6 +107,10 @@ export default function AboutPage() {
               Maintains conversation context across your planning session for coherent, evolving plans
             </li>
           </ul>
+          <p className="mt-4 text-base leading-relaxed text-slate-600">
+            Itinerary generation uses third-party AI providers. TripMind does not own or
+            train these AI models.
+          </p>
         </section>
 
         {/* CTA */}

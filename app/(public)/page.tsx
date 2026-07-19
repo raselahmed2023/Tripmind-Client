@@ -76,23 +76,23 @@ const steps = [
 const aiFeatures = [
   {
     icon: Bot,
-    title: "Agentic AI Planning",
-    description: "Our AI agent autonomously researches destinations, compares options, and builds itineraries that match your exact preferences.",
+    title: "AI Itinerary Planning",
+    description: "TripMind uses AI to generate personalized itineraries based on your destination, preferences, and budget.",
   },
   {
     icon: MessageSquare,
     title: "Conversational Assistant",
-    description: "Chat with your AI travel assistant to refine plans, ask questions, and get personalized recommendations.",
+    description: "Chat with the AI assistant during your planning session. It maintains conversation context to refine your plans.",
   },
   {
     icon: Target,
     title: "Budget Optimization",
-    description: "AI balances your spending across accommodation, food, transport, and activities to maximize value within your budget.",
+    description: "AI allocates your budget across accommodation, food, transport, and activities to maximize value within your limits.",
   },
   {
     icon: TrendingUp,
     title: "Smart Adaptation",
-    description: "New interests or changed plans? Regenerate your itinerary with updated preferences to get a fresh, optimized route.",
+    description: "Changed your mind? Regenerate your itinerary with updated preferences to get a fresh, optimized route.",
   },
 ];
 
@@ -201,7 +201,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700">
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 max-md:min-h-[50vh] md:h-[65vh] md:max-h-[600px] flex items-center">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="absolute inset-0">
           <motion.div
@@ -220,7 +220,7 @@ export default function HomePage() {
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
-        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -246,8 +246,8 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-primary-100"
             >
-              TripMind uses advanced AI to create personalized travel
-              itineraries, optimize your budget, and discover hidden gems at
+              TripMind uses AI to create personalized travel
+              itineraries, optimize your budget, and discover interesting spots at
               every destination.
             </motion.p>
             <motion.div
@@ -452,10 +452,10 @@ export default function HomePage() {
               Powered by AI
             </motion.div>
             <motion.h2 variants={fadeUp} className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Agentic AI That Plans For You
+              AI-Powered Trip Planning
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
-              Not just a template generator — our AI agent actively researches, reasons, and adapts to create truly personalized travel plans.
+              Uses AI to generate personalized itineraries, optimize budgets, and adapt plans to your preferences.
             </motion.p>
           </motion.div>
 
