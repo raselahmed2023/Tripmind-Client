@@ -131,17 +131,17 @@ function NotificationBell() {
                 return (
                   <Link
                     key={notifId}
-                    href={notification.link || "/notifications"}
+                    href="/notifications"
                     onClick={() => setOpen(false)}
                     className={cn(
                       "flex items-start gap-3 px-4 py-3 transition-colors hover:bg-slate-50",
-                      !notification.read && "bg-primary-50/30"
+                      !notification.isRead && "bg-primary-50/30"
                     )}
                   >
                     <div className="min-w-0 flex-1">
                       <p className={cn(
                         "text-sm line-clamp-1",
-                        !notification.read ? "font-semibold text-slate-900" : "text-slate-700"
+                        !notification.isRead ? "font-semibold text-slate-900" : "text-slate-700"
                       )}>
                         {notification.title}
                       </p>
@@ -149,7 +149,7 @@ function NotificationBell() {
                         {notification.message}
                       </p>
                     </div>
-                    {!notification.read && (
+                    {!notification.isRead && (
                       <button
                         onClick={(e) => handleMarkRead(notifId, e)}
                         className="mt-0.5 shrink-0 rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-primary-500"
@@ -239,8 +239,8 @@ export function Navbar() {
             <>
               {subscription && (
                 <CreditsDisplay
-                  remaining={subscription.aiCreditsRemaining}
-                  total={subscription.aiCreditsTotal}
+                  remaining={subscription.aiCredits}
+                  total={subscription.aiCredits + 1}
                 />
               )}
               <NotificationBell />
@@ -350,8 +350,8 @@ export function Navbar() {
                 {subscription && (
                   <div className="px-3 py-1">
                     <CreditsDisplay
-                      remaining={subscription.aiCreditsRemaining}
-                      total={subscription.aiCreditsTotal}
+                      remaining={subscription.aiCredits}
+                      total={subscription.aiCredits + 1}
                       size="sm"
                     />
                   </div>

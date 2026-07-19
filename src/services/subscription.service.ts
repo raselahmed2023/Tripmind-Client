@@ -1,18 +1,15 @@
-import { apiClient } from "@/lib";
-import type { ApiSuccessResponse, Subscription } from "@/types";
-
-function unwrap<T>(body: T | { success: boolean; data: T }): T {
-  if (body && typeof body === "object" && "success" in body && "data" in body) {
-    return (body as { data: T }).data;
-  }
-  return body as T;
-}
+import { apiClient, normalizeSingle } from "@/lib";
+import type { Subscription } from "@/types";
 
 export const subscriptionService = {
-  async getMe(): Promise<Subscription> {
-    const response = await apiClient.get<
-      ApiSuccessResponse<Subscription> | Subscription
-    >("/subscriptions/me");
-    return unwrap(response.data) as Subscription;
+  async getMe(): Promise<Subscription | null> {
+    try {
+      const response = await apiClient.get("/subscriptions/me");
+      return normalizeSingle<Subscription>(response.data);
+    } catch (err) {
+      const status = (err as { status?: number })?.status;
+      if (status === 404) return null;
+      throw err;
+    }
   },
 };

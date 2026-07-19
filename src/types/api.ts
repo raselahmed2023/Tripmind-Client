@@ -1,21 +1,23 @@
-export interface ApiSuccessResponse<T> {
+// ============================================================
+// API Response Envelope Types (backend contract source of truth)
+// ============================================================
+
+export interface ApiSuccessResponse<T = unknown> {
   success: boolean;
   message: string;
   data: T;
 }
 
-export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-  status: number;
-}
-
-export interface PaginatedResponse<T> {
+export interface ApiPaginatedResponse<T = unknown> {
+  success: boolean;
+  message: string;
   data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface ApiError {
@@ -24,13 +26,31 @@ export interface ApiError {
   errors?: Record<string, string[]>;
 }
 
+// ============================================================
+// Normalized paginated result (derived from envelope)
+// ============================================================
+
+export interface PaginatedResult<T> {
+  data: T[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// ============================================================
+// Auth
+// ============================================================
+
 export interface User {
-  id: string;
-  email: string;
+  _id: string;
   name: string;
+  email: string;
+  avatar: string;
   role: "user" | "admin";
-  avatar?: string;
+  authProvider: "local" | "google";
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface LoginRequest {
@@ -42,31 +62,171 @@ export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
+  avatar?: string;
 }
 
 export interface AuthResponse {
-  success: boolean;
-  message: string;
-  data: {
-    user: User;
-    accessToken: string;
-  };
+  user: User;
+  accessToken: string;
 }
 
-export interface MeResponse {
-  success: boolean;
-  message: string;
-  data: User;
+export interface GoogleExchangeRequest {
+  code: string;
 }
 
-export type TripStatus =
-  | "draft"
-  | "planned"
-  | "ongoing"
-  | "completed"
-  | "cancelled";
+// ============================================================
+// Destinations
+// ============================================================
+
+export interface Destination {
+  _id: string;
+  title: string;
+  slug: string;
+  country: string;
+  city: string;
+  shortDescription: string;
+  fullDescription: string;
+  images: string[];
+  category: string;
+  averageDailyCost: number;
+  currency: string;
+  rating: number;
+  reviewCount: number;
+  bestSeason: string;
+  recommendedDays: number;
+  latitude: number;
+  longitude: number;
+  highlights: string[];
+  status: "draft" | "published";
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateDestinationRequest {
+  title: string;
+  country: string;
+  city: string;
+  shortDescription: string;
+  fullDescription: string;
+  images: string[];
+  category: string;
+  averageDailyCost: number;
+  currency: string;
+  rating?: number;
+  reviewCount?: number;
+  bestSeason: string;
+  recommendedDays: number;
+  latitude: number;
+  longitude: number;
+  highlights: string[];
+  status?: "draft" | "published";
+}
+
+export type UpdateDestinationRequest = Partial<CreateDestinationRequest>;
+
+export interface DestinationQueryParams {
+  search?: string;
+  category?: string;
+  country?: string;
+  bestSeason?: string;
+  minCost?: number;
+  maxCost?: number;
+  minRating?: number;
+  sort?: DestinationSortOption;
+  page?: number;
+  limit?: number;
+}
+
+export interface AdminDestinationQueryParams extends DestinationQueryParams {
+  status?: "draft" | "published";
+}
+
+export type DestinationSortOption = "newest" | "highest_rating" | "lowest_cost" | "highest_cost";
+
+export const DESTINATION_SORT_OPTIONS: { value: DestinationSortOption; label: string }[] = [
+  { value: "newest", label: "Newest" },
+  { value: "highest_rating", label: "Highest Rating" },
+  { value: "lowest_cost", label: "Lowest Cost" },
+  { value: "highest_cost", label: "Highest Cost" },
+];
+
+export const DESTINATION_CATEGORIES = [
+  "Beach",
+  "Mountain",
+  "City",
+  "Countryside",
+  "Historical",
+  "Adventure",
+  "Island",
+  "Cultural",
+] as const;
+
+export const DESTINATION_SEASONS = [
+  "Spring",
+  "Summer",
+  "Autumn",
+  "Winter",
+  "Year-round",
+] as const;
+
+// ============================================================
+// Trips
+// ============================================================
+
+export type TripStatus = "draft" | "planned" | "ongoing" | "completed" | "cancelled";
 
 export type TravelStyle = "budget" | "mid-range" | "luxury";
+
+export interface Trip {
+  _id: string;
+  userId: string;
+  destinationId: string;
+  destination: Destination | null;
+  title: string;
+  startDate: string;
+  endDate: string;
+  travelers: number;
+  budget: number;
+  currency: string;
+  travelStyle: TravelStyle;
+  interests: string[];
+  accommodationPreference: string;
+  transportPreference: string;
+  status: TripStatus;
+  estimatedCost: number;
+  notes: string;
+  itineraryId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTripRequest {
+  destinationId: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  travelers: number;
+  budget: number;
+  currency: string;
+  travelStyle: TravelStyle;
+  interests: string[];
+  accommodationPreference: string;
+  transportPreference: string;
+  notes: string;
+}
+
+export type UpdateTripRequest = Partial<Omit<CreateTripRequest, "destinationId">> & {
+  status?: TripStatus;
+};
+
+export interface TripQueryParams {
+  status?: TripStatus;
+  travelStyle?: TravelStyle;
+  sort?: string;
+  page?: number;
+  limit?: number;
+}
 
 export const TRIP_STATUS_OPTIONS: { value: TripStatus; label: string }[] = [
   { value: "draft", label: "Draft" },
@@ -93,111 +253,153 @@ export const CURRENCY_OPTIONS = [
   { value: "CNY", label: "CNY" },
 ] as const;
 
-export interface Trip {
+// ============================================================
+// AI Itinerary (matches backend exactly)
+// ============================================================
+
+export interface ItineraryActivity {
+  title: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  estimatedCost: number;
+  category: string;
+  location: string;
+  notes: string;
+}
+
+export interface ItineraryDay {
+  dayNumber: number;
+  date: string;
+  title: string;
+  activities: ItineraryActivity[];
+}
+
+export interface Itinerary {
   _id: string;
+  tripId: string;
   userId: string;
   destinationId: string;
-  destination?: Destination;
-  title: string;
-  startDate: string;
-  endDate: string;
-  travelers: number;
-  budget: number;
-  currency: string;
-  travelStyle: TravelStyle;
-  interests: string[];
-  accommodationPreference: string;
-  transportPreference: string;
-  status: TripStatus;
-  estimatedCost: number;
-  notes: string;
-  itineraryId?: string;
+  summary: string;
+  days: ItineraryDay[];
+  costBreakdown: Record<string, number>;
+  warnings: string[];
+  recommendations: string[];
+  status: "draft" | "finalized" | "archived";
+  generatedAt: string;
+  aiModel: string;
+  tokenUsage?: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateTripRequest {
-  destinationId: string;
-  title: string;
-  startDate: string;
-  endDate: string;
-  travelers: number;
-  budget: number;
-  currency: string;
-  travelStyle: TravelStyle;
-  interests: string[];
-  accommodationPreference: string;
-  transportPreference: string;
-  notes: string;
+export interface GenerateItineraryRequest {
+  tripId: string;
+  dietaryPreferences?: string;
+  accessibilityNeeds?: string;
+  activityPreferences?: string[];
+  additionalNotes?: string;
 }
 
-export type UpdateTripRequest = Partial<
-  Omit<CreateTripRequest, "destinationId">
-> & {
-  status?: TripStatus;
-};
+// ============================================================
+// Notifications (matches backend exactly)
+// ============================================================
 
-export interface TripQueryParams {
-  page?: number;
-  limit?: number;
-  status?: string;
-  destinationId?: string;
-  sort?: string;
-}
+export type NotificationType =
+  | "ai_generation_started"
+  | "ai_generation_completed"
+  | "ai_generation_failed"
+  | "trip_updated"
+  | "trip_starting_soon"
+  | "budget_warning"
+  | "itinerary_finalized"
+  | "payment_completed"
+  | "payment_failed"
+  | "subscription_activated"
+  | "subscription_cancelled"
+  | "ai_credits_added";
+
+export type RelatedEntityType = "trip" | "itinerary" | "destination" | "system";
 
 export interface Notification {
   _id: string;
   userId: string;
-  type: "info" | "success" | "warning" | "reminder" | "ai_generation_started" | "ai_generation_completed" | "ai_generation_failed" | "trip_updated" | "trip_starting_soon" | "budget_warning" | "itinerary_finalized" | "payment_completed" | "payment_failed" | "subscription_activated" | "subscription_cancelled" | "ai_credits_added";
+  type: NotificationType;
   title: string;
   message: string;
-  read: boolean;
-  link?: string;
-  relatedTripId?: string;
-  relatedItineraryId?: string;
+  relatedEntityType: RelatedEntityType;
+  relatedEntityId: string | null;
+  isRead: boolean;
+  metadata: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface UnreadCountResponse {
-  success: boolean;
-  message: string;
-  data: {
-    count: number;
-  };
+export interface NotificationQueryParams {
+  type?: NotificationType;
+  isRead?: "true" | "false";
+  sort?: string;
+  page?: number;
+  limit?: number;
 }
 
+// ============================================================
+// Subscriptions (matches backend exactly)
+// ============================================================
+
+export type SubscriptionPlan = "free" | "pro_monthly";
+
+export type SubscriptionStatus = "active" | "past_due" | "cancelled" | "expired";
+
 export interface Subscription {
-  id: string;
-  plan: "free" | "pro" | "enterprise";
-  status: "active" | "canceled" | "past_due" | "trialing";
-  aiCreditsRemaining: number;
-  aiCreditsTotal: number;
-  currentPeriodEnd?: string;
-  cancelAtPeriodEnd?: boolean;
-  stripeCustomerId?: string;
-  stripeSubscriptionId?: string;
+  _id: string;
+  userId: string;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  plan: SubscriptionPlan;
+  status: SubscriptionStatus;
+  startsAt: string | null;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  aiCredits: number;
   createdAt: string;
+  updatedAt: string;
 }
+
+// ============================================================
+// Payments (matches backend exactly)
+// ============================================================
+
+export type ProductType = "subscription" | "credit_pack";
+
+export type PaymentPlan = "pro_monthly" | "ai_credits_10";
+
+export type PaymentStatus = "pending" | "paid" | "failed" | "cancelled" | "refunded";
 
 export interface Payment {
   _id: string;
   userId: string;
+  stripeCheckoutSessionId: string | null;
+  stripePaymentIntentId: string | null;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  productType: ProductType;
+  plan: PaymentPlan;
   amount: number;
   currency: string;
-  status: "succeeded" | "pending" | "failed" | "refunded";
-  description: string;
-  productType?: string;
-  stripeSessionId?: string;
-  stripePaymentIntentId?: string;
+  status: PaymentStatus;
+  metadata: Record<string, unknown>;
+  paidAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateCheckoutSessionRequest {
-  productType: "pro_monthly" | "credits_pack";
-  successUrl?: string;
-  cancelUrl?: string;
+  productType: ProductType;
 }
 
 export interface CreateCheckoutSessionResponse {
@@ -209,169 +411,49 @@ export interface CreatePortalSessionResponse {
   url: string;
 }
 
-export interface NotificationQueryParams {
-  page?: number;
-  limit?: number;
-  unreadOnly?: boolean;
-  type?: string;
-}
+// ============================================================
+// AI Assistant (matches backend exactly)
+// ============================================================
 
-export interface Destination {
+export interface Conversation {
   _id: string;
+  userId: string;
+  tripId: string | null;
   title: string;
-  slug: string;
-  country: string;
-  city: string;
-  shortDescription: string;
-  fullDescription: string;
-  images: string[];
-  category: string;
-  averageDailyCost: number;
-  currency: string;
-  rating: number;
-  reviewCount: number;
-  bestSeason: string;
-  recommendedDays: number;
-  latitude: number;
-  longitude: number;
-  highlights: string[];
-  status: string;
+  status: "active" | "archived";
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CreateDestinationRequest {
-  title: string;
-  shortDescription: string;
-  fullDescription: string;
-  city: string;
-  country: string;
-  averageDailyCost: number;
-  currency: string;
-  category: string;
-  rating: number;
-  bestSeason: string;
-  recommendedDays: number;
-  highlights: string[];
-  images: string[];
+export interface ToolCall {
+  toolName: string;
+  result: Record<string, unknown>;
 }
 
-export interface DestinationQueryParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  category?: string;
-  country?: string;
-  bestSeason?: string;
-  minRating?: number;
-  minCost?: number;
-  maxCost?: number;
-  sort?: string;
-}
-
-export type DestinationSortOption = "newest" | "rating_desc" | "cost_asc" | "cost_desc";
-
-export const DESTINATION_SORT_OPTIONS: { value: DestinationSortOption; label: string }[] = [
-  { value: "newest", label: "Newest" },
-  { value: "rating_desc", label: "Highest Rating" },
-  { value: "cost_asc", label: "Lowest Cost" },
-  { value: "cost_desc", label: "Highest Cost" },
-];
-
-export const DESTINATION_CATEGORIES = [
-  "Beach",
-  "Mountain",
-  "City",
-  "Countryside",
-  "Historical",
-  "Adventure",
-  "Island",
-  "Cultural",
-] as const;
-
-export const DESTINATION_SEASONS = [
-  "Spring",
-  "Summer",
-  "Autumn",
-  "Winter",
-  "Year-round",
-] as const;
-
-// AI Itinerary Types
-
-export interface ItineraryActivity {
-  time: string;
-  title: string;
-  description: string;
-  location?: string;
-  cost?: number;
-  duration?: string;
-  tips?: string;
-}
-
-export interface ItineraryDay {
-  day: number;
-  date: string;
-  title: string;
-  morning: ItineraryActivity[];
-  afternoon: ItineraryActivity[];
-  evening: ItineraryActivity[];
-  estimatedCost: number;
-  travelTime?: string;
-  notes?: string;
-}
-
-export interface ItineraryBudget {
-  accommodation: number;
-  transportation: number;
-  food: number;
-  activities: number;
-  miscellaneous: number;
-  total: number;
-  currency: string;
-}
-
-export interface ItineraryWeather {
-  day: number;
-  temperature: { high: number; low: number };
-  condition: string;
-  icon?: string;
-}
-
-export interface Itinerary {
+export interface AssistantMessage {
   _id: string;
-  tripId: string;
-  userId: string;
-  title: string;
-  overview: string;
-  days: ItineraryDay[];
-  budget: ItineraryBudget;
-  tips: string[];
-  warnings: string[];
-  packingSuggestions: string[];
-  weather?: ItineraryWeather[];
-  hotels: { name: string; location: string; pricePerNight: number; rating: number; description: string }[];
-  restaurants: { name: string; cuisine: string; priceRange: string; description: string }[];
-  transportation: { from: string; to: string; mode: string; duration: string; cost: number }[];
-  generatedAt: string;
-  model?: string;
+  conversationId: string;
+  role: "user" | "assistant" | "tool";
+  content: string;
+  toolCalls: ToolCall[];
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface GenerateItineraryRequest {
-  tripId: string;
+export interface CreateConversationRequest {
+  tripId?: string;
+  title?: string;
 }
 
-export interface GenerateItineraryResponse {
-  success: boolean;
-  message: string;
-  data: {
-    itinerary: Itinerary;
-    creditsRemaining: number;
-  };
+export interface SendMessageRequest {
+  content: string;
 }
 
-export interface AiCreditsInfo {
-  remaining: number;
-  total: number;
-  plan: string;
+// ============================================================
+// User Profile
+// ============================================================
+
+export interface UpdateProfileRequest {
+  name?: string;
+  avatar?: string;
 }

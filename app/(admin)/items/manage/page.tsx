@@ -16,21 +16,23 @@ import {
 } from "lucide-react";
 import { Button, Card, CardContent, Badge, Alert, Modal, Skeleton } from "@/components/ui";
 import { useAdminDestinations, useDeleteDestination, getAdminDestinationError } from "@/hooks/use-admin-destinations";
-import type { Destination, DestinationQueryParams } from "@/types";
+import type { Destination, AdminDestinationQueryParams } from "@/types";
 
 const PAGE_SIZE = 10;
 
 export default function ManageDestinationsPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"draft" | "published" | "">("");
   const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<Destination | null>(null);
 
-  const queryParams: DestinationQueryParams = {
+  const queryParams: AdminDestinationQueryParams = {
     page,
     limit: PAGE_SIZE,
     ...(search && { search }),
     ...(category && { category }),
+    ...(statusFilter && { status: statusFilter }),
   };
 
   const { data, isLoading, error } = useAdminDestinations(queryParams);
@@ -119,6 +121,15 @@ export default function ManageDestinationsPage() {
               <option value="Island">Island</option>
               <option value="Cultural">Cultural</option>
             </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => { setStatusFilter(e.target.value as "draft" | "published" | ""); setPage(1); }}
+              className="flex h-10 rounded-[var(--radius-md)] border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 sm:w-40"
+            >
+              <option value="">All Status</option>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
             <Button type="submit" variant="outline">
               Search
             </Button>
@@ -169,10 +180,10 @@ export default function ManageDestinationsPage() {
               <thead className="bg-slate-50 text-xs font-medium uppercase text-slate-500">
                 <tr>
                   <th className="px-6 py-3">Destination</th>
+                  <th className="px-6 py-3">Status</th>
                   <th className="px-6 py-3">Category</th>
                   <th className="px-6 py-3">Cost/Day</th>
                   <th className="px-6 py-3">Rating</th>
-                  <th className="px-6 py-3">Season</th>
                   <th className="px-6 py-3 text-right">Actions</th>
                 </tr>
               </thead>
@@ -196,6 +207,11 @@ export default function ManageDestinationsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
+                      <Badge variant={dest.status === "published" ? "success" : "accent"}>
+                        {dest.status}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4">
                       <Badge variant="primary">{dest.category || "N/A"}</Badge>
                     </td>
                     <td className="px-6 py-4 text-slate-700">
@@ -207,9 +223,6 @@ export default function ManageDestinationsPage() {
                         <span className="text-slate-700">{dest.rating?.toFixed(1) ?? "N/A"}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-slate-700">
-                      {dest.bestSeason || "N/A"}
-                    </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link
@@ -219,6 +232,12 @@ export default function ManageDestinationsPage() {
                         >
                           <Eye className="h-3.5 w-3.5" />
                           View
+                        </Link>
+                        <Link
+                          href={`/items/${dest._id}/edit`}
+                          className="inline-flex items-center gap-1 rounded-[var(--radius-md)] border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                        >
+                          Edit
                         </Link>
                         <button
                           onClick={() => setDeleteTarget(dest)}
@@ -253,13 +272,11 @@ export default function ManageDestinationsPage() {
                       <h3 className="font-semibold text-slate-900 truncate">{dest.title}</h3>
                       <p className="text-xs text-slate-500">{dest.city}, {dest.country}</p>
                       <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <Badge variant={dest.status === "published" ? "success" : "accent"}>{dest.status}</Badge>
                         <Badge variant="primary">{dest.category || "N/A"}</Badge>
                         <span className="flex items-center gap-1 text-xs text-slate-600">
                           <Star className="h-3 w-3 fill-accent-400 text-accent-400" />
                           {dest.rating?.toFixed(1) ?? "N/A"}
-                        </span>
-                        <span className="text-xs text-slate-600">
-                          {dest.currency || "$"}{dest.averageDailyCost}/day
                         </span>
                       </div>
                     </div>
@@ -273,6 +290,14 @@ export default function ManageDestinationsPage() {
                       <Button variant="outline" size="sm" className="w-full">
                         <Eye className="mr-1.5 h-3.5 w-3.5" />
                         View
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`/items/${dest._id}/edit`}
+                      className="flex-1"
+                    >
+                      <Button variant="outline" size="sm" className="w-full">
+                        Edit
                       </Button>
                     </Link>
                     <Button

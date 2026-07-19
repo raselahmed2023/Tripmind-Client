@@ -1,146 +1,143 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "@/services";
 import { AUTH_TOKEN_KEY } from "@/lib";
-import type {
-  ApiError,
-  AuthResponse,
-  LoginRequest,
-  RegisterRequest,
-  User,
-} from "@/types";
+import type { LoginRequest, RegisterRequest, ApiError } from "@/types";
 
 const AUTH_QUERY_KEY = ["auth", "me"] as const;
 
+function getToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+function setToken(token: string): void {
+  if (typeof window !== "undefined") {
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+  }
+}
+
+function removeToken(): void {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+  }
+}
+
 export function useAuth() {
-  const queryClient = useQueryClient();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const {
     data: user,
-    isLoading,
-    error,
-  } = useQuery<User | null, ApiError>({
+    isLoading: isLoadingUser,
+    error: userError,
+  } = useQuery({
     queryKey: AUTH_QUERY_KEY,
-    queryFn: async () => {
-      if (typeof window === "undefined") return null;
-      const token = localStorage.getItem(AUTH_TOKEN_KEY);
-      if (!token) return null;
-      try {
-        return await authService.getMe();
-      } catch {
-        localStorage.removeItem(AUTH_TOKEN_KEY);
-        return null;
-      }
+    queryFn: authService.getMe,
+    enabled: !!getToken(),
+    retry: (failureCount, error) => {
+      const status = (error as unknown as ApiError)?.status;
+      if (status === 401 || status === 403) return false;
+      return failureCount < 2;
     },
-    retry: false,
     staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
   });
 
-  const loginMutation = useMutation<AuthResponse, ApiError, LoginRequest>({
+  const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
-    onSuccess: (data: AuthResponse) => {
-      localStorage.setItem(AUTH_TOKEN_KEY, data.data.accessToken);
-      queryClient.setQueryData(AUTH_QUERY_KEY, data.data.user);
+    onSuccess: (data) => {
+      setToken(data.accessToken);
+      queryClient.setQueryData(AUTH_QUERY_KEY, data.user);
+      router.push("/dashboard");
     },
   });
 
-  const registerMutation = useMutation<
-    AuthResponse,
-    ApiError,
-    RegisterRequest
-  >({
+  const registerMutation = useMutation({
     mutationFn: (data: RegisterRequest) => authService.register(data),
-    onSuccess: (data: AuthResponse) => {
-      localStorage.setItem(AUTH_TOKEN_KEY, data.data.accessToken);
-      queryClient.setQueryData(AUTH_QUERY_KEY, data.data.user);
+    onSuccess: (data) => {
+      setToken(data.accessToken);
+      queryClient.setQueryData(AUTH_QUERY_KEY, data.user);
+      router.push("/dashboard");
     },
   });
 
-  const logoutMutation = useMutation<void, ApiError, void>({
+  const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
     onSettled: () => {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
+      removeToken();
       queryClient.setQueryData(AUTH_QUERY_KEY, null);
-      queryClient.removeQueries({ queryKey: AUTH_QUERY_KEY });
+      queryClient.clear();
       router.push("/login");
     },
   });
 
+  const googleExchangeMutation = useMutation({
+    mutationFn: (code: string) => authService.googleExchange({ code }),
+    onSuccess: (data) => {
+      setToken(data.accessToken);
+      queryClient.setQueryData(AUTH_QUERY_KEY, data.user);
+      router.push("/dashboard");
+    },
+  });
+
   const getLoginError = useCallback((): string | null => {
-    if (!loginMutation.isError) return null;
-    const err = loginMutation.error;
-    if (err.status === 401) return "Invalid email or password.";
-    if (err.status === 429)
-      return "Too many attempts. Please try again later.";
-    if (typeof navigator !== "undefined" && !navigator.onLine)
+    const error = loginMutation.error as unknown as ApiError | undefined;
+    if (!error) return null;
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
       return "You appear to be offline. Please check your connection.";
-    if (err.status >= 500)
-      return "Something went wrong on our end. Please try again.";
-    return err.message || "Login failed. Please try again.";
-  }, [loginMutation.isError, loginMutation.error]);
+    }
+    if (error.status === 401) return "Invalid email or password.";
+    if (error.status === 429) return "Too many attempts. Please wait a moment.";
+    if (error.status && error.status >= 500) return "Server error. Please try again later.";
+    return error.message || "Login failed. Please try again.";
+  }, [loginMutation.error]);
 
   const getRegisterError = useCallback((): string | null => {
-    if (!registerMutation.isError) return null;
-    const err = registerMutation.error;
-    if (err.status === 409)
-      return "An account with this email already exists.";
-    if (err.status === 429)
-      return "Too many attempts. Please try again later.";
-    if (typeof navigator !== "undefined" && !navigator.onLine)
+    const error = registerMutation.error as unknown as ApiError | undefined;
+    if (!error) return null;
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
       return "You appear to be offline. Please check your connection.";
-    if (err.status >= 500)
-      return "Something went wrong on our end. Please try again.";
-    if (err.errors) {
-      const firstError = Object.values(err.errors)[0];
-      if (firstError && firstError.length > 0) return firstError[0];
     }
-    return err.message || "Registration failed. Please try again.";
-  }, [registerMutation.isError, registerMutation.error]);
-
-  const loginWithRedirect = useCallback(
-    (data: LoginRequest, redirectTo: string) => {
-      loginMutation.mutate(data, {
-        onSuccess: () => {
-          router.push(redirectTo);
-        },
-      });
-    },
-    [loginMutation, router]
-  );
-
-  const registerWithRedirect = useCallback(
-    (data: RegisterRequest, redirectTo: string) => {
-      registerMutation.mutate(data, {
-        onSuccess: () => {
-          router.push(redirectTo);
-        },
-      });
-    },
-    [registerMutation, router]
-  );
+    if (error.status === 409) return "An account with this email already exists.";
+    if (error.status === 429) return "Too many attempts. Please wait a moment.";
+    if (error.status && error.status >= 500) return "Server error. Please try again later.";
+    return error.message || "Registration failed. Please try again.";
+  }, [registerMutation.error]);
 
   return {
-    user,
-    isLoading,
-    error,
-    isAuthenticated: !!user,
+    user: user ?? null,
+    isAuthenticated: !!user && !!getToken(),
     isAdmin: user?.role === "admin",
+    isLoadingUser,
+    userError: userError as ApiError | null,
+
     login: loginMutation,
-    loginWithRedirect,
-    register: registerMutation,
-    registerWithRedirect,
-    logout: logoutMutation,
-    loginError: getLoginError(),
-    registerError: getRegisterError(),
     isLoggingIn: loginMutation.isPending,
+    loginWithRedirect: (data: LoginRequest, redirectTo?: string | null) => {
+      loginMutation.mutate(data, {
+        onSuccess: () => {
+          if (redirectTo) {
+            router.push(redirectTo);
+          }
+        },
+      });
+    },
+    loginError: getLoginError(),
+
+    register: registerMutation,
     isRegistering: registerMutation.isPending,
+    registerError: getRegisterError(),
+
+    logout: logoutMutation,
     isLoggingOut: logoutMutation.isPending,
+
+    googleExchange: googleExchangeMutation,
+    isGoogleExchanging: googleExchangeMutation.isPending,
+    googleExchangeError: googleExchangeMutation.error
+      ? ((googleExchangeMutation.error as unknown as ApiError).message || "Google authentication failed.")
+      : null,
   };
 }

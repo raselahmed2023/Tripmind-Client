@@ -43,17 +43,17 @@ const plans = [
     period: "/month",
     description: "For serious travelers who want more",
     features: [
-      "50 AI generations per billing period",
+      "AI-powered itinerary generation",
       "Itinerary regeneration",
       "Advanced budget analysis",
-      "Premium travel assistant access",
+      "Travel assistant access",
       "Unlimited active trips",
       "Priority support",
     ],
     cta: "Start Pro Plan",
     href: null,
     popular: true,
-    productType: "pro_monthly" as const,
+    productType: "subscription" as const,
   },
   {
     id: "credits" as const,
@@ -71,7 +71,7 @@ const plans = [
     cta: "Buy Credits",
     href: null,
     popular: false,
-    productType: "credits_pack" as const,
+    productType: "credit_pack" as const,
   },
 ];
 
@@ -93,8 +93,6 @@ export default function PricingPage() {
     try {
       const result = await createCheckout.mutateAsync({
         productType,
-        successUrl: `${window.location.origin}/payment/success`,
-        cancelUrl: `${window.location.origin}/payment/cancel`,
       });
 
       if (result.url) {
@@ -204,7 +202,7 @@ export default function PricingPage() {
 
       <div className="mt-16 text-center">
         <p className="text-sm text-slate-500">
-          All paid plans include a 7-day free trial. Cancel anytime.
+          Cancel anytime. No long-term commitments.
         </p>
         <div className="mt-6 flex items-center justify-center gap-6 text-sm text-slate-500">
           <span className="flex items-center gap-1.5">

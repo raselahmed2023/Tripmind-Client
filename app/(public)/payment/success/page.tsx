@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CheckCircle,
   Loader2,
@@ -14,8 +15,10 @@ import {
 import { Button, Card, CardContent } from "@/components/ui";
 import { usePaymentSuccessPoll } from "@/hooks";
 
-export default function PaymentSuccessPage() {
-  const { refetchAll } = usePaymentSuccessPoll();
+function PaymentSuccessInner() {
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("session_id") || "";
+  const { refetch: refetchPayments } = usePaymentSuccessPoll(sessionId, true);
   const [displayStatus, setDisplayStatus] = useState<"loading" | "confirmed" | "timeout">("loading");
   const attemptsRef = useRef(0);
   const mountedRef = useRef(true);
@@ -33,7 +36,7 @@ export default function PaymentSuccessPage() {
 
     const poll = async () => {
       try {
-        await refetchAll();
+        await refetchPayments();
       } catch {
         // continue polling
       }
@@ -50,7 +53,7 @@ export default function PaymentSuccessPage() {
     poll();
     const timer = setInterval(poll, POLL_INTERVAL);
     return () => clearInterval(timer);
-  }, [displayStatus, refetchAll]);
+  }, [displayStatus, refetchPayments]);
 
   return (
     <div className="mx-auto max-w-lg px-4 py-16 sm:px-6 lg:px-8">
@@ -138,5 +141,19 @@ export default function PaymentSuccessPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-primary-500" />
+        </div>
+      }
+    >
+      <PaymentSuccessInner />
+    </Suspense>
   );
 }

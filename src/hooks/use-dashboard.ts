@@ -3,50 +3,43 @@
 import { useQueries } from "@tanstack/react-query";
 import { tripService, notificationService, subscriptionService } from "@/services";
 
+const DASHBOARD_TRIPS_KEY = ["dashboard", "trips"] as const;
+const DASHBOARD_NOTIFICATIONS_KEY = ["dashboard", "notifications"] as const;
+const DASHBOARD_UNREAD_KEY = ["dashboard", "unread-count"] as const;
+const DASHBOARD_SUBSCRIPTION_KEY = ["dashboard", "subscription"] as const;
+
 export function useDashboardData() {
   const results = useQueries({
     queries: [
       {
-        queryKey: ["dashboard", "trips"] as const,
-        queryFn: () => tripService.getAll({ page: 1, limit: 50 }),
-        staleTime: 60 * 1000,
-      },
-      {
-        queryKey: ["dashboard", "notifications"] as const,
-        queryFn: () => notificationService.getAll({ limit: 5 }),
+        queryKey: DASHBOARD_TRIPS_KEY,
+        queryFn: () => tripService.getAll({ limit: 20 }),
         staleTime: 30 * 1000,
       },
       {
-        queryKey: ["dashboard", "unread-count"] as const,
+        queryKey: DASHBOARD_NOTIFICATIONS_KEY,
+        queryFn: () => notificationService.getAll({ limit: 5, sort: "-createdAt" }),
+        staleTime: 30 * 1000,
+      },
+      {
+        queryKey: DASHBOARD_UNREAD_KEY,
         queryFn: () => notificationService.getUnreadCount(),
         staleTime: 30 * 1000,
       },
       {
-        queryKey: ["dashboard", "subscription"] as const,
+        queryKey: DASHBOARD_SUBSCRIPTION_KEY,
         queryFn: () => subscriptionService.getMe(),
-        staleTime: 5 * 60 * 1000,
-        retry: false,
+        staleTime: 30 * 1000,
       },
     ],
   });
 
-  const [tripsResult, notificationsResult, unreadCountResult, subscriptionResult] = results;
-
   return {
-    trips: tripsResult.data,
-    tripsLoading: tripsResult.isLoading,
-    tripsError: tripsResult.error,
-
-    notifications: notificationsResult.data?.data ?? [],
-    notificationsLoading: notificationsResult.isLoading,
-
-    unreadCount: unreadCountResult.data ?? 0,
-    unreadCountLoading: unreadCountResult.isLoading,
-
-    subscription: subscriptionResult.data,
-    subscriptionLoading: subscriptionResult.isLoading,
-
+    trips: results[0],
+    notifications: results[1],
+    unreadCount: results[2],
+    subscription: results[3],
     isLoading: results.some((r) => r.isLoading),
-    hasError: results.some((r) => r.isError),
+    isError: results.some((r) => r.isError),
   };
 }

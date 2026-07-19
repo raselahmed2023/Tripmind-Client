@@ -58,7 +58,7 @@ export function TripDetail({ tripId }: TripDetailProps) {
   const [showGenerateDialog, setShowGenerateDialog] = useState(false);
   const [showItinerary, setShowItinerary] = useState(false);
 
-  const creditsRemaining = subscription?.aiCreditsRemaining ?? 0;
+  const creditsRemaining = subscription?.aiCredits ?? 0;
   const creditsRequired = 1;
 
   const handleCancel = useCallback(async () => {
@@ -427,7 +427,7 @@ export function TripDetail({ tripId }: TripDetailProps) {
                 >
                   {hasItinerary ? "Regenerate Itinerary" : "Generate AI Itinerary"}
                 </Button>
-                <CreditsDisplay remaining={creditsRemaining} total={subscription?.aiCreditsTotal ?? 0} />
+                <CreditsDisplay remaining={creditsRemaining} total={(subscription?.aiCredits ?? 0) + creditsRequired} />
                 {isEditable && (
                   <Button
                     variant="outline"

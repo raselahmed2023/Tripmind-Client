@@ -211,9 +211,12 @@ function LoginPageInner() {
                   variant="outline"
                   className="w-full"
                   size="lg"
-                  disabled
-                  aria-label="Google sign-in coming soon"
-                  title="Google sign-in will be connected after backend OAuth setup"
+                  onClick={() => {
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+                    const currentPath = window.location.pathname;
+                    sessionStorage.setItem("post_login_redirect", currentPath);
+                    window.location.href = `${apiUrl}/auth/google`;
+                  }}
                   leftIcon={
                     <svg className="h-5 w-5" viewBox="0 0 24 24">
                       <path
@@ -239,7 +242,7 @@ function LoginPageInner() {
                 </Button>
 
                 <p className="mt-3 text-center text-xs text-slate-400">
-                  Google sign-in will be available after backend OAuth setup
+                  Sign in with your Google account
                 </p>
 
                 <div className="mt-6 text-center">

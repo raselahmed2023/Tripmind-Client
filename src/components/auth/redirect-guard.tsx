@@ -7,7 +7,7 @@ import { sanitizeRedirect } from "@/utils";
 import { MapPin } from "lucide-react";
 
 export function RedirectGuard({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoadingUser: isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirecting = useRef(false);

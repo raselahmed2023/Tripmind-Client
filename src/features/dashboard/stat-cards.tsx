@@ -37,10 +37,8 @@ export function StatCards({
   const totalTrips = trips.length;
   const upcoming = getUpcomingCount(trips);
   const completed = getCompletedCount(trips);
-  const credits = subscription?.aiCreditsRemaining ?? 0;
-  const planName = subscription?.plan
-    ? subscription.plan.charAt(0).toUpperCase() + subscription.plan.slice(1)
-    : "Free";
+  const credits = subscription?.aiCredits ?? 0;
+  const planName = subscription?.plan === "pro_monthly" ? "Pro" : "Free";
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

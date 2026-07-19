@@ -24,18 +24,22 @@ interface TripsChartProps {
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "#94a3b8",
-  active: "#10b981",
+  planned: "#3b82f6",
+  ongoing: "#10b981",
   completed: "#1e40af",
+  cancelled: "#ef4444",
 };
 
 const STATUS_LABELS: Record<string, string> = {
   draft: "Draft",
-  active: "Active",
+  planned: "Planned",
+  ongoing: "Ongoing",
   completed: "Completed",
+  cancelled: "Cancelled",
 };
 
 function getChartData(trips: Trip[]) {
-  const counts: Record<string, number> = { draft: 0, active: 0, completed: 0 };
+  const counts: Record<string, number> = {};
   trips.forEach((t) => {
     counts[t.status] = (counts[t.status] || 0) + 1;
   });

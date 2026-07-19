@@ -82,12 +82,6 @@ export default function BlogPage() {
           </article>
         ))}
       </div>
-
-      <div className="mt-12 text-center">
-        <p className="text-sm text-slate-500">
-          More articles coming soon. Check back regularly for new travel insights.
-        </p>
-      </div>
     </div>
   );
 }

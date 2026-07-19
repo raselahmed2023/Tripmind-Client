@@ -47,12 +47,11 @@ function FreePlanCard() {
         </div>
       </div>
       <p className="text-sm text-slate-600">
-        Upgrade to Pro for unlimited AI-powered trip planning, priority support,
-        and advanced itinerary features.
+        Upgrade to Pro for more AI-powered trip planning and priority support.
       </p>
-      <Link href="/settings">
+      <Link href="/pricing">
         <Button leftIcon={<CreditCard className="h-4 w-4" />}>
-          Upgrade to Pro
+          View Plans
         </Button>
       </Link>
     </div>
@@ -60,11 +59,6 @@ function FreePlanCard() {
 }
 
 function ActivePlanCard({ subscription }: { subscription: Subscription }) {
-  const creditsPercent =
-    subscription.aiCreditsTotal > 0
-      ? (subscription.aiCreditsRemaining / subscription.aiCreditsTotal) * 100
-      : 0;
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -74,15 +68,15 @@ function ActivePlanCard({ subscription }: { subscription: Subscription }) {
           </div>
           <div>
             <p className="font-medium text-slate-900">
-              {subscription.plan.charAt(0).toUpperCase() +
-                subscription.plan.slice(1)}{" "}
-              Plan
+              {subscription.plan === "pro_monthly" ? "Pro" : "Free"} Plan
             </p>
-            <Badge variant="success">Active</Badge>
+            <Badge variant={subscription.status === "active" ? "success" : "accent"}>
+              {subscription.status}
+            </Badge>
           </div>
         </div>
         {subscription.stripeCustomerId && (
-          <Link href="/settings">
+          <Link href="/billing">
             <Button variant="outline" size="sm">
               Manage Billing
             </Button>
@@ -94,14 +88,8 @@ function ActivePlanCard({ subscription }: { subscription: Subscription }) {
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-600">AI Credits</span>
           <span className="font-medium text-slate-900">
-            {subscription.aiCreditsRemaining} / {subscription.aiCreditsTotal}
+            {subscription.aiCredits}
           </span>
-        </div>
-        <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-secondary-500 transition-all"
-            style={{ width: `${creditsPercent}%` }}
-          />
         </div>
       </div>
 

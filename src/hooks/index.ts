@@ -29,6 +29,15 @@ export {
 export {
   useAdminDestinations,
   useCreateDestination,
+  useUpdateDestination,
   useDeleteDestination,
   getAdminDestinationError,
 } from "./use-admin-destinations";
+export {
+  useConversations,
+  useMessages,
+  useCreateConversation,
+  useSendMessage,
+  useDeleteConversation,
+  getAssistantError,
+} from "./use-assistant";

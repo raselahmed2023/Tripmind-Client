@@ -142,7 +142,7 @@ export default function ProfilePage() {
                 <p className="text-xs font-medium uppercase text-slate-500">AI Credits</p>
                 <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-900">
                   <Sparkles className="h-3.5 w-3.5 text-primary-500" />
-                  {subscription?.aiCreditsRemaining ?? 0} remaining
+                  {subscription?.aiCredits ?? 0} remaining
                 </p>
               </div>
               {subscription?.currentPeriodEnd && (

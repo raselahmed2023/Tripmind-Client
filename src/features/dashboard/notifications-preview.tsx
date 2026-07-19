@@ -40,11 +40,18 @@ function formatTimestamp(dateStr: string): string {
 
 function getNotificationIcon(type: Notification["type"]) {
   switch (type) {
-    case "success":
+    case "ai_generation_completed":
+    case "trip_updated":
+    case "itinerary_finalized":
+    case "payment_completed":
+    case "ai_credits_added":
       return <CheckCircle className="h-4 w-4 text-green-500" />;
-    case "warning":
+    case "ai_generation_failed":
+    case "payment_failed":
+    case "budget_warning":
       return <AlertTriangle className="h-4 w-4 text-amber-500" />;
-    case "reminder":
+    case "ai_generation_started":
+    case "trip_starting_soon":
       return <Clock className="h-4 w-4 text-blue-500" />;
     default:
       return <Info className="h-4 w-4 text-slate-400" />;
@@ -117,7 +124,7 @@ export function NotificationsPreview({
               <div
                 key={notification._id}
                 className={`flex items-start gap-3 rounded-[var(--radius-md)] p-2 transition-colors ${
-                  !notification.read ? "bg-primary-50/50" : ""
+                  !notification.isRead ? "bg-primary-50/50" : ""
                 }`}
               >
                 <div className="mt-0.5 shrink-0">
@@ -126,7 +133,7 @@ export function NotificationsPreview({
                 <div className="min-w-0 flex-1">
                   <p
                     className={`text-sm ${
-                      !notification.read
+                      !notification.isRead
                         ? "font-medium text-slate-900"
                         : "text-slate-700"
                     }`}

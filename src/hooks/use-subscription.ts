@@ -8,8 +8,7 @@ const SUBSCRIPTION_QUERY_KEY = ["subscription", "me"] as const;
 export function useSubscription() {
   return useQuery({
     queryKey: SUBSCRIPTION_QUERY_KEY,
-    queryFn: () => subscriptionService.getMe(),
-    staleTime: 5 * 60 * 1000,
-    retry: false,
+    queryFn: subscriptionService.getMe,
+    staleTime: 30 * 1000,
   });
 }

@@ -37,12 +37,16 @@ function formatCurrency(amount: number, currency: string): string {
 
 function getStatusBadge(status: string) {
   switch (status) {
-    case "succeeded":
-      return <Badge variant="success"><CheckCircle className="mr-1 h-3 w-3" />Succeeded</Badge>;
+    case "paid":
+      return <Badge variant="success"><CheckCircle className="mr-1 h-3 w-3" />Paid</Badge>;
     case "pending":
       return <Badge variant="accent"><Clock className="mr-1 h-3 w-3" />Pending</Badge>;
     case "failed":
       return <Badge variant="destructive"><XCircle className="mr-1 h-3 w-3" />Failed</Badge>;
+    case "cancelled":
+      return <Badge variant="destructive"><XCircle className="mr-1 h-3 w-3" />Cancelled</Badge>;
+    case "refunded":
+      return <Badge variant="accent"><RefreshCw className="mr-1 h-3 w-3" />Refunded</Badge>;
     default:
       return <Badge>{status}</Badge>;
   }
@@ -50,7 +54,8 @@ function getStatusBadge(status: string) {
 
 export default function BillingPage() {
   const { data: subscription, isLoading: subLoading } = useSubscription();
-  const { data: payments, isLoading: paymentsLoading, refetch: refetchPayments } = usePayments();
+  const { data: paymentsResult, isLoading: paymentsLoading, refetch: refetchPayments } = usePayments();
+  const payments = paymentsResult?.data ?? [];
   const createPortal = useCreatePortalSession();
   const [portalError, setPortalError] = useState<string | null>(null);
 
@@ -126,7 +131,7 @@ export default function BillingPage() {
               <p className="text-xs font-medium uppercase text-slate-500">AI Credits</p>
               <p className="mt-1 text-lg font-bold text-slate-900">
                 <Sparkles className="mr-1 inline h-4 w-4 text-primary-500" />
-                {subscription?.aiCreditsRemaining ?? 0} / {subscription?.aiCreditsTotal ?? 0}
+                {subscription?.aiCredits ?? 0}
               </p>
             </div>
             {subscription?.currentPeriodEnd && (
@@ -199,13 +204,13 @@ export default function BillingPage() {
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-slate-900">
-                      {payment.description || payment.productType || "Payment"}
+                      {payment.productType === "subscription" ? "Pro Subscription" : "AI Credits Pack"}
                     </p>
                     <p className="mt-0.5 text-xs text-slate-500">
                       {formatDate(payment.createdAt)}
-                      {payment.stripeSessionId && (
+                      {payment.paidAt && (
                         <span className="ml-2">
-                          · {payment.stripeSessionId.slice(0, 12)}...
+                          · Paid {formatDate(payment.paidAt)}
                         </span>
                       )}
                     </p>

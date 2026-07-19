@@ -9,7 +9,7 @@ import { TripCard, TripCardSkeleton } from "@/components/trip";
 import { useTrips, useDeleteTrip } from "@/hooks";
 import { DeleteTripModal } from "./delete-trip-modal";
 import { TRIP_STATUS_OPTIONS } from "@/types";
-import type { Trip, TripQueryParams } from "@/types";
+import type { Trip, TripQueryParams, TripStatus } from "@/types";
 
 function getSearchParams(params: URLSearchParams) {
   return {
@@ -87,7 +87,7 @@ export function TripList() {
     page: current.page,
     limit: 10,
     ...(current.search && { search: current.search }),
-    ...(current.status && { status: current.status }),
+    ...(current.status && { status: current.status as TripStatus }),
     ...(current.sort && { sort: current.sort }),
   };
 

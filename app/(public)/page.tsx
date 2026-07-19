@@ -196,7 +196,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function HomePage() {
-  const { data: destinationsData, isLoading: destinationsLoading } = useDestinations({ limit: 4, sort: "rating_desc" });
+  const { data: destinationsData, isLoading: destinationsLoading } = useDestinations({ limit: 4, sort: "highest_rating" });
   const featuredDestinations = destinationsData?.data ?? [];
 
   return (

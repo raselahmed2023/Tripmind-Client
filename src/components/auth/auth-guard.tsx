@@ -31,7 +31,7 @@ export function AuthGuard({
   requireAuth = true,
   requireAdmin = false,
 }: AuthGuardProps) {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, isLoadingUser: isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const redirecting = useRef(false);

@@ -1,65 +1,56 @@
-import { apiClient } from "@/lib";
+import { apiClient, normalizePaginated, normalizeSingle } from "@/lib";
 import type {
   Destination,
   DestinationQueryParams,
-  PaginatedResponse,
+  AdminDestinationQueryParams,
   CreateDestinationRequest,
+  UpdateDestinationRequest,
+  PaginatedResult,
 } from "@/types";
 
-function unwrap<T>(body: T | { success: boolean; data: T }): T {
-  if (body && typeof body === "object" && "success" in body && "data" in body) {
-    return (body as { data: T }).data;
-  }
-  return body as T;
-}
-
-function cleanParams(
-  params: DestinationQueryParams
-): Record<string, string | number> {
+function cleanParams<T extends Record<string, unknown>>(params: T): Record<string, string | number> {
   const cleaned: Record<string, string | number> = {};
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null && value !== "") {
-      cleaned[key] = value;
+      cleaned[key] = value as string | number;
     }
   }
   return cleaned;
 }
 
 export const destinationService = {
-  async getAll(
-    params?: DestinationQueryParams
-  ): Promise<PaginatedResponse<Destination>> {
-    const response = await apiClient.get<
-      PaginatedResponse<Destination> | { success: boolean; data: PaginatedResponse<Destination> }
-    >("/destinations", {
-      params: params ? cleanParams(params) : undefined,
+  async getAll(params?: DestinationQueryParams): Promise<PaginatedResult<Destination>> {
+    const response = await apiClient.get("/destinations", {
+      params: params ? cleanParams(params as Record<string, unknown>) : undefined,
     });
-
-    return unwrap(response.data) as PaginatedResponse<Destination>;
+    return normalizePaginated<Destination>(response.data);
   },
 
   async getBySlug(slug: string): Promise<Destination> {
-    const response = await apiClient.get<
-      Destination | { success: boolean; data: Destination }
-    >(`/destinations/${slug}`);
-
-    return unwrap(response.data) as Destination;
+    const response = await apiClient.get(`/destinations/${slug}`);
+    return normalizeSingle<Destination>(response.data);
   },
 
-  async getById(id: string): Promise<Destination> {
-    const response = await apiClient.get<
-      Destination | { success: boolean; data: Destination }
-    >(`/destinations/${id}`);
+  async getAdminAll(params?: AdminDestinationQueryParams): Promise<PaginatedResult<Destination>> {
+    const response = await apiClient.get("/destinations/admin/all", {
+      params: params ? cleanParams(params as Record<string, unknown>) : undefined,
+    });
+    return normalizePaginated<Destination>(response.data);
+  },
 
-    return unwrap(response.data) as Destination;
+  async getAdminById(id: string): Promise<Destination> {
+    const response = await apiClient.get(`/destinations/admin/${id}`);
+    return normalizeSingle<Destination>(response.data);
   },
 
   async create(data: CreateDestinationRequest): Promise<Destination> {
-    const response = await apiClient.post<
-      Destination | { success: boolean; data: Destination }
-    >("/destinations", data);
+    const response = await apiClient.post("/destinations", data);
+    return normalizeSingle<Destination>(response.data);
+  },
 
-    return unwrap(response.data) as Destination;
+  async update(id: string, data: UpdateDestinationRequest): Promise<Destination> {
+    const response = await apiClient.patch(`/destinations/${id}`, data);
+    return normalizeSingle<Destination>(response.data);
   },
 
   async delete(id: string): Promise<void> {

@@ -7,7 +7,6 @@ import {
   Star,
   Calendar,
   Route,
-  Bookmark,
   AlertTriangle,
   RefreshCw,
 } from "lucide-react";
@@ -231,20 +230,6 @@ export function DestinationDetailContent({ slug }: DestinationDetailContentProps
                 </Button>
               </Link>
             )}
-          </div>
-
-          {/* Save Destination Shell */}
-          <div className="rounded-[var(--radius-xl)] border border-slate-200 bg-white p-6 shadow-sm">
-            <Button
-              variant="outline"
-              className="w-full"
-              leftIcon={<Bookmark className="h-4 w-4" />}
-            >
-              Save to Wishlist
-            </Button>
-            <p className="mt-2 text-center text-xs text-slate-400">
-              Coming soon
-            </p>
           </div>
 
           {/* Quick Stats */}

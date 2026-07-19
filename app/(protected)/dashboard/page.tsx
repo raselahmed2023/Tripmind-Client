@@ -20,18 +20,21 @@ import {
 export default function DashboardPage() {
   const { user } = useAuth();
   const {
-    trips,
-    tripsLoading,
-    tripsError,
-    notifications,
-    notificationsLoading,
-    unreadCount,
-    subscription,
-    subscriptionLoading,
-    hasError,
+    trips: tripsResult,
+    notifications: notificationsResult,
+    unreadCount: unreadCountResult,
+    subscription: subscriptionResult,
+    isError: hasError,
   } = useDashboardData();
 
-  const tripList = trips?.data ?? [];
+  const tripList = tripsResult.data?.data ?? [];
+  const notifications = notificationsResult.data?.data ?? [];
+  const unreadCount = unreadCountResult.data ?? 0;
+  const subscription = subscriptionResult.data ?? undefined;
+  const tripsLoading = tripsResult.isLoading;
+  const tripsError = tripsResult.error;
+  const notificationsLoading = notificationsResult.isLoading;
+  const subscriptionLoading = subscriptionResult.isLoading;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">

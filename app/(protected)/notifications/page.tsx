@@ -47,8 +47,7 @@ function getNotificationIcon(type: string) {
 }
 
 function getNotificationLink(notification: Notification): string | null {
-  if (notification.link) return notification.link;
-  if (notification.relatedTripId) return `/trips/${notification.relatedTripId}`;
+  if (notification.relatedEntityType === "trip" && notification.relatedEntityId) return `/trips/${notification.relatedEntityId}`;
   return null;
 }
 
@@ -60,7 +59,7 @@ export default function NotificationsPage() {
   const { data, isLoading, error, refetch } = useNotifications({
     page,
     limit,
-    unreadOnly: filter === "unread" ? true : undefined,
+    isRead: filter === "unread" ? "false" : undefined,
   });
 
   const markRead = useMarkNotificationRead();
@@ -198,7 +197,7 @@ export default function NotificationsPage() {
               <Card
                 key={notifId}
                 className={`transition-colors ${
-                  !notification.read ? "border-primary-200 bg-primary-50/30" : ""
+                  !notification.isRead ? "border-primary-200 bg-primary-50/30" : ""
                 }`}
               >
                 <CardContent className="flex items-start gap-3 py-4">
@@ -208,14 +207,14 @@ export default function NotificationsPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0 flex-1">
-                        <p className={`text-sm ${!notification.read ? "font-semibold text-slate-900" : "text-slate-700"}`}>
+                        <p className={`text-sm ${!notification.isRead ? "font-semibold text-slate-900" : "text-slate-700"}`}>
                           {notification.title}
                         </p>
                         <p className="mt-0.5 text-sm text-slate-500 line-clamp-2">
                           {notification.message}
                         </p>
                       </div>
-                      {!notification.read && (
+                      {!notification.isRead && (
                         <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary-500" />
                       )}
                     </div>
@@ -232,7 +231,7 @@ export default function NotificationsPage() {
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-1">
-                    {!notification.read && (
+                    {!notification.isRead && (
                       <Button
                         variant="ghost"
                         size="sm"

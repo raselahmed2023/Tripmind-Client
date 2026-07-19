@@ -1,302 +1,188 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import {
   Calendar,
   DollarSign,
-  MapPin,
   AlertTriangle,
-  CheckCircle,
-  Luggage,
-  Cloud,
-  Utensils,
-  Building,
-  Car,
+  Lightbulb,
+  Clock,
+  MapPin,
   ChevronDown,
-  ChevronUp,
-  List,
-  Grid,
+  ChevronRight,
+  Tag,
 } from "lucide-react";
-import { Card, CardContent, Button } from "@/components/ui";
+import { Card, CardContent, Badge } from "@/components/ui";
 import { cn } from "@/utils";
-import { DayCard } from "./day-card";
-import type { Itinerary } from "@/types";
+import type { Itinerary, ItineraryActivity } from "@/types";
 
 interface ItineraryViewerProps {
   itinerary: Itinerary;
 }
 
-function CollapsibleSection({
-  title,
-  icon,
-  children,
-  defaultOpen = false,
-}: {
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
+const categoryColors: Record<string, string> = {
+  food: "bg-orange-100 text-orange-700",
+  transport: "bg-blue-100 text-blue-700",
+  accommodation: "bg-purple-100 text-purple-700",
+  activity: "bg-green-100 text-green-700",
+  sightseeing: "bg-teal-100 text-teal-700",
+  shopping: "bg-pink-100 text-pink-700",
+  default: "bg-slate-100 text-slate-700",
+};
 
+function ActivityCard({ activity }: { activity: ItineraryActivity }) {
   return (
-    <Card>
-      <button
-        onClick={() => setOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors"
-        aria-expanded={open}
-      >
-        <div className="flex items-center gap-2">
-          {icon}
-          <h3 className="font-semibold text-slate-900">{title}</h3>
-        </div>
-        {open ? (
-          <ChevronUp className="h-5 w-5 text-slate-400" />
-        ) : (
-          <ChevronDown className="h-5 w-5 text-slate-400" />
-        )}
-      </button>
-      {open && <CardContent className="border-t border-slate-100 pt-4">{children}</CardContent>}
-    </Card>
-  );
-}
-
-function BudgetBar({
-  label,
-  amount,
-  total,
-  color,
-}: {
-  label: string;
-  amount: number;
-  total: number;
-  color: string;
-}) {
-  const pct = total > 0 ? Math.round((amount / total) * 100) : 0;
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-sm">
-        <span className="text-slate-600">{label}</span>
-        <span className="font-medium text-slate-900">${amount.toLocaleString()}</span>
+    <div className="flex gap-3 rounded-[var(--radius-lg)] border border-slate-100 bg-slate-50 p-3">
+      <div className="flex flex-col items-center gap-1 text-xs text-slate-500">
+        <Clock className="h-3.5 w-3.5" />
+        <span className="font-medium">{activity.startTime}</span>
+        <span>{activity.endTime}</span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div className={cn("h-full rounded-full transition-all", color)} style={{ width: `${pct}%` }} />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <h4 className="text-sm font-semibold text-slate-900">{activity.title}</h4>
+          {activity.estimatedCost > 0 && (
+            <span className="shrink-0 text-xs font-medium text-slate-600">
+              ${activity.estimatedCost}
+            </span>
+          )}
+        </div>
+        <p className="mt-1 text-xs leading-relaxed text-slate-600">{activity.description}</p>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className={cn("text-[10px]", categoryColors[activity.category] || categoryColors.default)}>
+            {activity.category}
+          </Badge>
+          {activity.location && (
+            <span className="flex items-center gap-1 text-[10px] text-slate-500">
+              <MapPin className="h-3 w-3" />
+              {activity.location}
+            </span>
+          )}
+        </div>
+        {activity.notes && (
+          <p className="mt-1.5 text-[11px] italic text-slate-500">{activity.notes}</p>
+        )}
       </div>
     </div>
   );
 }
 
-export function ItineraryViewer({ itinerary }: ItineraryViewerProps) {
-  const [allExpanded, setAllExpanded] = useState(false);
+function DayCard({ day, defaultOpen = false }: { day: Itinerary["days"][0]; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const dayCost = day.activities.reduce((sum, a) => sum + a.estimatedCost, 0);
 
-  const toggleAll = useCallback(() => setAllExpanded((prev) => !prev), []);
+  return (
+    <div className="overflow-hidden rounded-[var(--radius-xl)] border border-slate-200">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-inset"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-sm font-bold text-primary-600">
+            {day.dayNumber}
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900">{day.title}</h3>
+            <p className="text-xs text-slate-500">
+              {day.date} &middot; {day.activities.length} activities
+              {dayCost > 0 && ` · ~$${dayCost}`}
+            </p>
+          </div>
+        </div>
+        {open ? <ChevronDown className="h-5 w-5 text-slate-400" /> : <ChevronRight className="h-5 w-5 text-slate-400" />}
+      </button>
+      {open && (
+        <div className="space-y-2 border-t border-slate-100 p-4">
+          {day.activities.length === 0 ? (
+            <p className="text-center text-sm text-slate-400">No activities planned.</p>
+          ) : (
+            day.activities.map((activity, idx) => (
+              <ActivityCard key={idx} activity={activity} />
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function ItineraryViewer({ itinerary }: ItineraryViewerProps) {
+  const totalCost = Object.values(itinerary.costBreakdown).reduce((sum, v) => sum + v, 0);
 
   return (
     <div className="space-y-6">
-      {/* Overview */}
+      {/* Summary */}
       <Card>
         <CardContent className="pt-6">
-          <h2 className="mb-2 text-xl font-bold text-slate-900">{itinerary.title}</h2>
-          <p className="text-sm leading-relaxed text-slate-600">{itinerary.overview}</p>
-          <div className="mt-4 flex flex-wrap gap-3 text-sm text-slate-500">
+          <h2 className="text-lg font-semibold text-slate-900">Itinerary Summary</h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{itinerary.summary}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-500">
             <span className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
+              <Calendar className="h-3.5 w-3.5" />
               {itinerary.days.length} days
             </span>
             <span className="flex items-center gap-1">
-              <DollarSign className="h-4 w-4" />
-              ${itinerary.budget.total.toLocaleString()} total
+              <DollarSign className="h-3.5 w-3.5" />
+              ~${totalCost} total
             </span>
-            {itinerary.generatedAt && (
-              <span className="flex items-center gap-1">
-                <CheckCircle className="h-4 w-4" />
-                Generated {new Date(itinerary.generatedAt).toLocaleDateString()}
-              </span>
-            )}
+            <Badge variant={itinerary.status === "draft" ? "accent" : itinerary.status === "finalized" ? "success" : "default"}>
+              {itinerary.status}
+            </Badge>
           </div>
         </CardContent>
       </Card>
 
-      {/* Budget Breakdown */}
-      <Card>
-        <CardContent className="pt-6">
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-slate-900">
-            <DollarSign className="h-5 w-5 text-primary-500" />
-            Budget Breakdown
-          </h3>
-          <div className="space-y-3">
-            <BudgetBar label="Accommodation" amount={itinerary.budget.accommodation} total={itinerary.budget.total} color="bg-blue-500" />
-            <BudgetBar label="Transportation" amount={itinerary.budget.transportation} total={itinerary.budget.total} color="bg-green-500" />
-            <BudgetBar label="Food & Drinks" amount={itinerary.budget.food} total={itinerary.budget.total} color="bg-orange-500" />
-            <BudgetBar label="Activities" amount={itinerary.budget.activities} total={itinerary.budget.total} color="bg-purple-500" />
-            <BudgetBar label="Miscellaneous" amount={itinerary.budget.miscellaneous} total={itinerary.budget.total} color="bg-slate-400" />
-          </div>
-          <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
-            <span className="font-semibold text-slate-900">Total Estimated</span>
-            <span className="text-lg font-bold text-slate-900">
-              {itinerary.budget.currency}{itinerary.budget.total.toLocaleString()}
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Weather */}
-      {itinerary.weather && itinerary.weather.length > 0 && (
+      {/* Cost Breakdown */}
+      {Object.keys(itinerary.costBreakdown).length > 0 && (
         <Card>
           <CardContent className="pt-6">
-            <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <Cloud className="h-5 w-5 text-primary-500" />
-              Weather Forecast
-            </h3>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {itinerary.weather.map((w) => (
-                <div key={w.day} className="rounded-[var(--radius-md)] bg-slate-50 p-3 text-center">
-                  <p className="text-xs font-medium text-slate-500">Day {w.day}</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-900">
-                    {w.temperature.high}° / {w.temperature.low}°
-                  </p>
-                  <p className="text-xs text-slate-500">{w.condition}</p>
+            <h2 className="mb-4 text-lg font-semibold text-slate-900 flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-primary-500" />
+              Cost Breakdown
+            </h2>
+            <div className="space-y-3">
+              {Object.entries(itinerary.costBreakdown).map(([key, value]) => (
+                <div key={key} className="flex items-center justify-between">
+                  <span className="flex items-center gap-2 text-sm text-slate-600 capitalize">
+                    <Tag className="h-3.5 w-3.5 text-slate-400" />
+                    {key.replace(/([A-Z])/g, " $1").trim()}
+                  </span>
+                  <span className="text-sm font-medium text-slate-900">${value}</span>
                 </div>
               ))}
+              <div className="border-t border-slate-200 pt-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-semibold text-slate-900">Total</span>
+                  <span className="text-sm font-bold text-slate-900">${totalCost}</span>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Days Timeline */}
+      {/* Days */}
       <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-900">Daily Timeline</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleAll}
-            leftIcon={allExpanded ? <List className="h-4 w-4" /> : <Grid className="h-4 w-4" />}
-          >
-            {allExpanded ? "Collapse All" : "Expand All"}
-          </Button>
-        </div>
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">Day-by-Day Plan</h2>
         <div className="space-y-3">
           {itinerary.days.map((day) => (
-            <DayCard key={day.day} day={day} defaultExpanded={allExpanded} />
+            <DayCard key={day.dayNumber} day={day} defaultOpen={day.dayNumber === 1} />
           ))}
         </div>
       </div>
 
-      {/* Hotels */}
-      {itinerary.hotels.length > 0 && (
-        <CollapsibleSection
-          title="Recommended Hotels"
-          icon={<Building className="h-5 w-5 text-primary-500" />}
-        >
-          <div className="space-y-3">
-            {itinerary.hotels.map((hotel, i) => (
-              <div key={i} className="rounded-[var(--radius-md)] border border-slate-100 p-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-medium text-slate-900">{hotel.name}</p>
-                    <p className="text-sm text-slate-500">{hotel.description}</p>
-                    {hotel.location && (
-                      <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
-                        <MapPin className="h-3 w-3" />
-                        {hotel.location}
-                      </p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-slate-900">${hotel.pricePerNight}/night</p>
-                    <p className="text-xs text-slate-500">★ {hotel.rating}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CollapsibleSection>
-      )}
-
-      {/* Restaurants */}
-      {itinerary.restaurants.length > 0 && (
-        <CollapsibleSection
-          title="Restaurant Recommendations"
-          icon={<Utensils className="h-5 w-5 text-primary-500" />}
-        >
-          <div className="space-y-3">
-            {itinerary.restaurants.map((r, i) => (
-              <div key={i} className="rounded-[var(--radius-md)] border border-slate-100 p-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-medium text-slate-900">{r.name}</p>
-                    <p className="text-sm text-slate-500">{r.description}</p>
-                  </div>
-                  <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
-                    {r.cuisine} · {r.priceRange}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CollapsibleSection>
-      )}
-
-      {/* Transportation */}
-      {itinerary.transportation.length > 0 && (
-        <CollapsibleSection
-          title="Transportation"
-          icon={<Car className="h-5 w-5 text-primary-500" />}
-        >
-          <div className="space-y-3">
-            {itinerary.transportation.map((t, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-[var(--radius-md)] border border-slate-100 p-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100">
-                  <Car className="h-4 w-4 text-primary-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-900">
-                    {t.from} → {t.to}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {t.mode} · {t.duration}
-                  </p>
-                </div>
-                <span className="text-sm font-medium text-slate-700">${t.cost}</span>
-              </div>
-            ))}
-          </div>
-        </CollapsibleSection>
-      )}
-
-      {/* Tips */}
-      {itinerary.tips.length > 0 && (
-        <Card>
-          <CardContent className="pt-6">
-            <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              Travel Tips
-            </h3>
-            <ul className="space-y-2">
-              {itinerary.tips.map((tip, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500" />
-                  {tip}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Warnings */}
       {itinerary.warnings.length > 0 && (
-        <Card className="border-amber-200">
+        <Card>
           <CardContent className="pt-6">
-            <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900">
+            <h2 className="mb-3 text-lg font-semibold text-slate-900 flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
-              Important Warnings
-            </h3>
+              Warnings
+            </h2>
             <ul className="space-y-2">
-              {itinerary.warnings.map((warning, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-amber-800">
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
+              {itinerary.warnings.map((warning, idx) => (
+                <li key={idx} className="flex items-start gap-2 text-sm text-slate-600">
+                  <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
                   {warning}
                 </li>
               ))}
@@ -305,24 +191,22 @@ export function ItineraryViewer({ itinerary }: ItineraryViewerProps) {
         </Card>
       )}
 
-      {/* Packing Suggestions */}
-      {itinerary.packingSuggestions.length > 0 && (
+      {/* Recommendations */}
+      {itinerary.recommendations.length > 0 && (
         <Card>
           <CardContent className="pt-6">
-            <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <Luggage className="h-5 w-5 text-primary-500" />
-              Packing Suggestions
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {itinerary.packingSuggestions.map((item, i) => (
-                <span
-                  key={i}
-                  className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
-                >
-                  {item}
-                </span>
+            <h2 className="mb-3 text-lg font-semibold text-slate-900 flex items-center gap-2">
+              <Lightbulb className="h-5 w-5 text-primary-500" />
+              Recommendations
+            </h2>
+            <ul className="space-y-2">
+              {itinerary.recommendations.map((rec, idx) => (
+                <li key={idx} className="flex items-start gap-2 text-sm text-slate-600">
+                  <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary-400" />
+                  {rec}
+                </li>
               ))}
-            </div>
+            </ul>
           </CardContent>
         </Card>
       )}

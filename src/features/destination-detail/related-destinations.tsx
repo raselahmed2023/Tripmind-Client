@@ -16,7 +16,7 @@ export function RelatedDestinations({
   const { data, isLoading } = useDestinations({
     category,
     limit: 5,
-    sort: "rating_desc",
+    sort: "highest_rating",
   });
 
   const destinations = data?.data.filter((d) => d.slug !== currentSlug).slice(0, 4);

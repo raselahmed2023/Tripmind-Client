@@ -89,7 +89,7 @@ function PasswordRequirements({ password }: { password: string }) {
 }
 
 function RegisterPageInner() {
-  const { registerWithRedirect, registerError, isRegistering } = useAuth();
+  const { register: registerMutation, registerError, isRegistering } = useAuth();
 
   const {
     register,
@@ -111,16 +111,15 @@ function RegisterPageInner() {
   const onSubmit = useCallback(
     (data: RegisterFormData) => {
       if (isRegistering) return;
-      registerWithRedirect(
+      registerMutation.mutate(
         {
           name: data.name,
           email: data.email,
           password: data.password,
-        },
-        "/dashboard"
+        }
       );
     },
-    [isRegistering, registerWithRedirect]
+    [isRegistering, registerMutation]
   );
 
   return (

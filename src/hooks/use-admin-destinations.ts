@@ -2,14 +2,14 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { destinationService } from "@/services";
-import type { DestinationQueryParams, CreateDestinationRequest, ApiError } from "@/types";
+import type { AdminDestinationQueryParams, CreateDestinationRequest, UpdateDestinationRequest, ApiError } from "@/types";
 
 const DESTINATIONS_QUERY_KEY = ["destinations"] as const;
 
-export function useAdminDestinations(params?: DestinationQueryParams) {
+export function useAdminDestinations(params?: AdminDestinationQueryParams) {
   return useQuery({
     queryKey: [...DESTINATIONS_QUERY_KEY, "admin", params],
-    queryFn: () => destinationService.getAll(params),
+    queryFn: () => destinationService.getAdminAll(params),
     staleTime: 30 * 1000,
   });
 }
@@ -19,6 +19,18 @@ export function useCreateDestination() {
 
   return useMutation({
     mutationFn: (data: CreateDestinationRequest) => destinationService.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: DESTINATIONS_QUERY_KEY });
+    },
+  });
+}
+
+export function useUpdateDestination() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateDestinationRequest }) =>
+      destinationService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DESTINATIONS_QUERY_KEY });
     },

@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { aiService } from "@/services";
-import type { ApiError, Itinerary, GenerateItineraryRequest } from "@/types";
+import type { ApiError, GenerateItineraryRequest } from "@/types";
 
 const ITINERARY_QUERY_KEY = ["itinerary"] as const;
 const TRIPS_QUERY_KEY = ["trips"] as const;
@@ -29,6 +29,9 @@ function getAiFriendlyError(error: unknown): string {
   }
   if (apiError?.status === 403) {
     return "You don't have permission to generate itineraries.";
+  }
+  if (apiError?.status === 404) {
+    return "Trip not found. Please make sure the trip exists.";
   }
   if (apiError?.status && apiError.status >= 500) {
     return "The AI service is temporarily unavailable. Please try again later.";
@@ -57,12 +60,8 @@ export function useItinerary(itineraryId?: string | null) {
 export function useGenerateItinerary() {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    { itinerary: Itinerary; creditsRemaining: number },
-    ApiError,
-    GenerateItineraryRequest
-  >({
-    mutationFn: aiService.generateItinerary,
+  return useMutation({
+    mutationFn: (data: GenerateItineraryRequest) => aiService.generateItinerary(data),
     onSuccess: (data, variables) => {
       queryClient.setQueryData(
         [...ITINERARY_QUERY_KEY, data.itinerary._id],
