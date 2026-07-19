@@ -28,7 +28,7 @@ function GoogleCallbackInner() {
         sessionStorage.removeItem("post_login_redirect");
         const redirect = sanitizeRedirect(raw);
         window.history.replaceState({}, "", redirect);
-        router.push(redirect);
+        router.replace(redirect);
       },
     });
   }, [code, error, isGoogleExchanging, googleExchange, router]);

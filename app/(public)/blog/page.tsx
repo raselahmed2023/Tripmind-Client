@@ -12,8 +12,8 @@ const articles = [
     image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect fill='%23dbeafe' width='800' height='400'/%3E%3Ctext x='400' y='200' text-anchor='middle' fill='%233b82f6' font-family='sans-serif' font-size='24'%3E🌏 Southeast Asia%3C/text%3E%3C/svg%3E",
   },
   {
-    slug: "solo-travel-safety-tips-2025",
-    title: "Solo Travel Safety Tips for 2025",
+    slug: "solo-travel-safety-tips",
+    title: "Solo Travel Safety Tips",
     category: "Safety",
     readTime: "6 min read",
     date: "February 3, 2025",
@@ -26,7 +26,7 @@ const articles = [
     category: "Technology",
     readTime: "5 min read",
     date: "March 12, 2025",
-    excerpt: "Artificial intelligence is reshaping how we plan and experience travel. From personalized itineraries to real-time budget optimization, discover the AI tools that are making travel smarter.",
+    excerpt: "Artificial intelligence is reshaping how we plan and experience travel. From personalized itineraries to budget optimization, discover the AI tools that are making travel smarter.",
     image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect fill='%23ede9fe' width='800' height='400'/%3E%3Ctext x='400' y='200' text-anchor='middle' fill='%237c3aed' font-family='sans-serif' font-size='24'%3E🤖 AI Travel%3C/text%3E%3C/svg%3E",
   },
 ];

@@ -73,7 +73,7 @@ export default function AboutPage() {
             a cohesive, actionable plan.
           </p>
           <p className="mt-4 text-base leading-relaxed text-slate-600">
-            Today, TripMind serves thousands of travelers who trust our AI to create itineraries
+            Today, TripMind helps travelers trust our AI to create itineraries
             that feel hand-crafted by a local expert. We are continuously improving our models
             and expanding our destination database to serve you better.
           </p>
@@ -100,7 +100,7 @@ export default function AboutPage() {
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
-              Adapts recommendations based on weather forecasts and seasonal factors
+              Adapts recommendations based on seasonal factors and your preferences
             </li>
             <li className="flex items-start gap-3">
               <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-primary-500" />
@@ -113,7 +113,7 @@ export default function AboutPage() {
         <section className="rounded-[var(--radius-xl)] bg-gradient-to-br from-primary-500 to-primary-600 p-8 text-center sm:p-12">
           <h2 className="text-2xl font-bold text-white">Ready to Plan Your Trip?</h2>
           <p className="mx-auto mt-3 max-w-lg text-primary-100">
-            Join thousands of travelers who plan smarter with TripMind. Start free today.
+            Join travelers who plan smarter with TripMind. Start free today.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link href="/register">

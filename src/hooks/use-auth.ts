@@ -79,7 +79,6 @@ export function useAuth() {
     onSuccess: (data) => {
       setToken(data.accessToken);
       queryClient.setQueryData(AUTH_QUERY_KEY, data.user);
-      router.push("/dashboard");
     },
   });
 

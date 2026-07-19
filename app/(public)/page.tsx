@@ -68,7 +68,7 @@ const steps = [
   {
     step: 4,
     title: "Travel with Confidence",
-    description: "Follow your personalized itinerary, track expenses in real-time, and adjust on the fly with AI assistance.",
+    description: "Follow your personalized itinerary and use the AI assistant to answer questions and get recommendations during your trip.",
     icon: Plane,
   },
 ];
@@ -82,17 +82,17 @@ const aiFeatures = [
   {
     icon: MessageSquare,
     title: "Conversational Assistant",
-    description: "Chat with your AI travel assistant to refine plans, ask questions, and get real-time recommendations during your trip.",
+    description: "Chat with your AI travel assistant to refine plans, ask questions, and get personalized recommendations.",
   },
   {
     icon: Target,
     title: "Budget Optimization",
-    description: "AI continuously optimizes your spending across accommodation, food, transport, and activities to maximize value.",
+    description: "AI balances your spending across accommodation, food, transport, and activities to maximize value within your budget.",
   },
   {
     icon: TrendingUp,
     title: "Smart Adaptation",
-    description: "Weather changes, closures, or new interests? Your AI itinerary adapts in real-time to keep your trip on track.",
+    description: "New interests or changed plans? Regenerate your itinerary with updated preferences to get a fresh, optimized route.",
   },
 ];
 
@@ -114,7 +114,7 @@ const testimonials = [
   {
     name: "Digital Nomad",
     role: "Illustrative Travel Scenario",
-    content: "Chat with an AI travel assistant to refine plans, get local recommendations, and adapt your itinerary in real-time as you travel.",
+    content: "Chat with an AI travel assistant to refine plans, get local recommendations, and adjust your itinerary as your preferences evolve.",
     rating: 5,
     avatar: "DN",
   },
@@ -128,7 +128,7 @@ const travelGuides = [
     description: "Discover how to explore Thailand, Vietnam, and Bali without breaking the bank.",
   },
   {
-    title: "Solo Travel Safety Tips for 2025",
+    title: "Solo Travel Safety Tips",
     category: "Safety",
     readTime: "6 min read",
     description: "Essential safety advice for solo travelers, from packing to navigation.",
@@ -144,7 +144,7 @@ const travelGuides = [
 const faqItems = [
   {
     question: "How does the AI itinerary generation work?",
-    answer: "Our AI analyzes your destination, preferences, budget, and travel dates to create a personalized day-by-day itinerary. It considers factors like opening hours, distances, weather forecasts, and local events to optimize your schedule.",
+    answer: "Our AI analyzes your destination, preferences, budget, and travel dates to create a personalized day-by-day itinerary. It considers factors like distances and your stated preferences to optimize your schedule.",
   },
   {
     question: "How much does TripMind cost?",
@@ -152,15 +152,15 @@ const faqItems = [
   },
   {
     question: "Can I modify the AI-generated itinerary?",
-    answer: "Absolutely. Your itinerary is fully editable. You can rearrange activities, swap restaurants, adjust budgets, and the AI will adapt the rest of your plan accordingly.",
+    answer: "You can regenerate your itinerary with different preferences at any time. If you need changes, adjust your inputs and the AI will create a new plan that matches your updated requirements.",
   },
   {
     question: "Does TripMind work offline?",
-    answer: "Real-time features like AI chat assistance and itinerary generation require an internet connection. Your trip details can be viewed from your dashboard when offline.",
+    answer: "TripMind requires an internet connection for AI itinerary generation and the travel assistant chat.",
   },
   {
     question: "What destinations does TripMind support?",
-    answer: "TripMind covers destinations worldwide across every continent. Our database includes detailed information for hundreds of cities, beaches, mountains, and cultural sites.",
+    answer: "TripMind covers destinations worldwide. Our growing database includes information for cities, beaches, mountains, and cultural sites across every continent.",
   },
 ];
 
@@ -289,7 +289,7 @@ export default function HomePage() {
               Featured Destinations
             </motion.h2>
             <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-              Top-rated destinations chosen by our community of travelers.
+              Top-rated destinations from our curated collection.
             </motion.p>
           </motion.div>
 
@@ -494,10 +494,10 @@ export default function HomePage() {
             className="grid grid-cols-2 gap-8 lg:grid-cols-4"
           >
             {[
-              { icon: Globe, value: "500+", label: "Destinations" },
+              { icon: Globe, value: "Global", label: "Destinations" },
               { icon: Sparkles, value: "AI-Powered", label: "Itinerary Generation" },
               { icon: Route, value: "Custom", label: "Day-by-Day Plans" },
-              { icon: Star, value: "Real-time", label: "Budget Optimization" },
+              { icon: Star, value: "Budget", label: "Optimized Itineraries" },
             ].map((stat) => (
               <motion.div key={stat.label} variants={fadeUp} className="text-center">
                 <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary-50">
