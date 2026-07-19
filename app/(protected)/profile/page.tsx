@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   User,
   Mail,
@@ -46,10 +47,13 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <div className="relative">
                 {user.avatar ? (
-                  <img
+                  <Image
                     src={user.avatar}
                     alt={user.name}
+                    width={80}
+                    height={80}
                     className="h-20 w-20 rounded-full object-cover"
+                    unoptimized
                   />
                 ) : (
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary-500 text-2xl font-bold text-white">

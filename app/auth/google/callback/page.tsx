@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui";
 import { useAuth } from "@/hooks";
+import { sanitizeRedirect } from "@/utils";
 
 function GoogleCallbackInner() {
   const router = useRouter();
@@ -23,8 +24,9 @@ function GoogleCallbackInner() {
     exchangedRef.current = true;
     googleExchange.mutate(code, {
       onSuccess: () => {
-        const redirect = sessionStorage.getItem("post_login_redirect") || "/dashboard";
+        const raw = sessionStorage.getItem("post_login_redirect");
         sessionStorage.removeItem("post_login_redirect");
+        const redirect = sanitizeRedirect(raw);
         window.history.replaceState({}, "", redirect);
         router.push(redirect);
       },

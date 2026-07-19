@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -77,7 +77,6 @@ export function TripForm({
   const [interestInput, setInterestInput] = useState("");
   const [showDestSearch, setShowDestSearch] = useState(false);
   const [destSearchInput, setDestSearchInput] = useState("");
-  const [selectedDestTitle, setSelectedDestTitle] = useState("");
 
   const defaultValues: TripFormData = {
     destinationId: initialData?.destinationId || preselectedDestinationId || "",
@@ -102,7 +101,7 @@ export function TripForm({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     setError,
     formState: { errors },
@@ -111,11 +110,14 @@ export function TripForm({
     defaultValues,
   });
 
-  const watchedStartDate = watch("startDate");
-  const watchedEndDate = watch("endDate");
-  const watchedBudget = watch("budget");
-  const watchedTravelers = watch("travelers");
-  const watchedInterests = watch("interests");
+  const watchedStartDate = useWatch({ control, name: "startDate" });
+  const watchedEndDate = useWatch({ control, name: "endDate" });
+  const watchedBudget = useWatch({ control, name: "budget" });
+  const watchedTravelers = useWatch({ control, name: "travelers" });
+  const watchedInterests = useWatch({ control, name: "interests" });
+  const watchedDestinationSearch = useWatch({ control, name: "destinationSearch" });
+  const watchedCurrency = useWatch({ control, name: "currency" });
+  const watchedTravelStyle = useWatch({ control, name: "travelStyle" });
 
   const { data: destSearchResults } = useDestinations({
     search: destSearchInput.length >= 2 ? destSearchInput : undefined,
@@ -131,15 +133,16 @@ export function TripForm({
       const d = preselectedDest.data;
       setValue("destinationId", d._id);
       setValue("destinationSearch", d.title);
-      setSelectedDestTitle(d.title);
     }
   }, [preselectedDest.data, setValue]);
 
   useEffect(() => {
     if (initialData?.destination) {
-      setSelectedDestTitle(initialData.destination.title);
+      setValue("destinationSearch", initialData.destination.title);
     }
-  }, [initialData]);
+  }, [initialData, setValue]);
+
+  const selectedDestTitle = showDestSearch ? "" : watchedDestinationSearch;
 
   const durationDays =
     watchedStartDate && watchedEndDate
@@ -263,7 +266,7 @@ export function TripForm({
           </label>
           <input
             type="text"
-            value={showDestSearch ? destSearchInput : watch("destinationSearch")}
+            value={showDestSearch ? destSearchInput : watchedDestinationSearch}
             onChange={(e) => {
               if (showDestSearch) {
                 setDestSearchInput(e.target.value);
@@ -297,7 +300,6 @@ export function TripForm({
                       shouldValidate: true,
                     });
                     setValue("destinationSearch", dest.title);
-                    setSelectedDestTitle(dest.title);
                     setShowDestSearch(false);
                     setDestSearchInput("");
                   }}
@@ -540,7 +542,7 @@ export function TripForm({
               <div>
                 <p className="text-slate-500">Daily Budget</p>
                 <p className="font-medium text-slate-900">
-                  {watch("currency")}
+                  {watchedCurrency}
                   {dailyBudget.toLocaleString()}/day
                 </p>
               </div>
@@ -556,7 +558,7 @@ export function TripForm({
             <div>
               <p className="text-slate-500">Style</p>
               <p className="font-medium text-slate-900 capitalize">
-                {watch("travelStyle")}
+                {watchedTravelStyle}
               </p>
             </div>
           </div>

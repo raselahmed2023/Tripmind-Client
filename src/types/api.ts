@@ -348,7 +348,7 @@ export interface NotificationQueryParams {
 // Trip Plan Payments (matches backend exactly)
 // ============================================================
 
-export type TripPlanPaymentStatusType = "pending" | "paid" | "failed" | "cancelled" | "refunded";
+export type TripPlanPaymentStatusType = "unpaid" | "pending" | "paid" | "failed" | "refunded";
 
 export interface TripPlanPaymentStatus {
   tripId: string;

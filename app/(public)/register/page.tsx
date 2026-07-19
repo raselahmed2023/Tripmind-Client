@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { Suspense, useCallback } from "react";
-import { useForm } from "react-hook-form";
+import { useSearchParams } from "next/navigation";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -16,6 +17,7 @@ import {
 import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/hooks";
 import { RedirectGuard } from "@/components/auth";
+import { sanitizeRedirect } from "@/utils";
 import {
   MapPin,
   Compass,
@@ -90,11 +92,13 @@ function PasswordRequirements({ password }: { password: string }) {
 
 function RegisterPageInner() {
   const { register: registerMutation, registerError, isRegistering } = useAuth();
+  const searchParams = useSearchParams();
+  const redirectTo = sanitizeRedirect(searchParams.get("redirect"));
 
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -106,7 +110,7 @@ function RegisterPageInner() {
     },
   });
 
-  const watchedPassword = watch("password");
+  const watchedPassword = useWatch({ control, name: "password" });
 
   const onSubmit = useCallback(
     (data: RegisterFormData) => {
@@ -312,8 +316,7 @@ function RegisterPageInner() {
                   size="lg"
                   onClick={() => {
                     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
-                    const currentPath = window.location.pathname;
-                    sessionStorage.setItem("post_login_redirect", currentPath);
+                    sessionStorage.setItem("post_login_redirect", redirectTo);
                     window.location.href = `${apiUrl}/auth/google`;
                   }}
                   leftIcon={

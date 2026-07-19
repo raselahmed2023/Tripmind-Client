@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { LogOut, User, ChevronDown, Shield, LayoutDashboard, Settings } from "lucide-react";
 import { useAuth } from "@/hooks";
 import { Badge } from "@/components/ui";
@@ -53,10 +54,13 @@ export function UserMenu() {
         aria-haspopup="true"
       >
         {user.avatar ? (
-          <img
+          <Image
             src={user.avatar}
             alt={user.name}
+            width={32}
+            height={32}
             className="h-8 w-8 rounded-full object-cover"
+            unoptimized
           />
         ) : (
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-500 text-sm font-medium text-white">

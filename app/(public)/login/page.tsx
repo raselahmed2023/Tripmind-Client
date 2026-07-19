@@ -172,20 +172,6 @@ function LoginPageInner() {
                     />
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="remember"
-                      className="h-4 w-4 rounded border-slate-300 text-primary-500 focus:ring-primary-500"
-                    />
-                    <label
-                      htmlFor="remember"
-                      className="text-sm text-slate-600"
-                    >
-                      Remember me
-                    </label>
-                  </div>
-
                   <Button
                     type="submit"
                     className="w-full"
@@ -213,8 +199,8 @@ function LoginPageInner() {
                   size="lg"
                   onClick={() => {
                     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
-                    const currentPath = window.location.pathname;
-                    sessionStorage.setItem("post_login_redirect", currentPath);
+                    const intended = sanitizeRedirect(searchParams.get("redirect"));
+                    sessionStorage.setItem("post_login_redirect", intended);
                     window.location.href = `${apiUrl}/auth/google`;
                   }}
                   leftIcon={

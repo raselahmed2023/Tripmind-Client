@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
@@ -315,10 +316,13 @@ export function Navbar() {
               <div className="space-y-2">
                 <div className="flex items-center gap-3 px-3 py-2">
                   {user?.avatar ? (
-                    <img
+                    <Image
                       src={user.avatar}
                       alt={user.name}
+                      width={36}
+                      height={36}
                       className="h-9 w-9 rounded-full object-cover"
+                      unoptimized
                     />
                   ) : (
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-500 text-sm font-medium text-white">

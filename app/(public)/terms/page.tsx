@@ -36,13 +36,12 @@ export default function TermsPage() {
         </section>
 
         <section>
-          <h2 className="mb-3 text-lg font-semibold text-slate-900">4. Subscriptions and Payments</h2>
+          <h2 className="mb-3 text-lg font-semibold text-slate-900">4. Payments</h2>
           <ul className="list-disc space-y-2 pl-5">
-            <li><strong>Free Plan:</strong> Includes limited AI generations and basic features at no cost.</li>
-            <li><strong>Pro Plan:</strong> Billed monthly at $19. Cancel anytime. Refunds handled per our refund policy.</li>
-            <li><strong>Credits Pack:</strong> One-time purchase of AI generation credits. Non-refundable once used.</li>
-            <li>All payments are processed securely through Stripe.</li>
-            <li>Prices may change with 30 days notice to existing subscribers.</li>
+            <li><strong>One-Time Trip Plan Purchase:</strong> Each AI Trip Plan is a one-time purchase per trip. There are no subscriptions, no Pro plans, and no credit packs.</li>
+            <li>All payments are processed securely through Stripe one-time Checkout.</li>
+            <li>Prices are displayed before checkout and may change with reasonable notice.</li>
+            <li>Refunds are handled according to applicable law and our refund policy.</li>
           </ul>
         </section>
 

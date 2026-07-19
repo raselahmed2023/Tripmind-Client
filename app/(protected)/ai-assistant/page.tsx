@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import {
   Bot,
   Send,
@@ -50,7 +50,7 @@ export default function AIAssistantPage() {
   const conversations = conversationsData?.data ?? [];
 
   const { data: messagesData, isLoading: messagesLoading } = useMessages(selectedConversationId);
-  const messages = messagesData?.data ?? [];
+  const messages = useMemo(() => messagesData?.data ?? [], [messagesData]);
 
   const createConversation = useCreateConversation();
   const sendMessage = useSendMessage();

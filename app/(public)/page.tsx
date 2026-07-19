@@ -38,12 +38,12 @@ const stagger = {
 };
 
 const categories = [
-  { icon: Waves, label: "Beach", count: "200+" },
-  { icon: Mountain, label: "Mountain", count: "150+" },
-  { icon: Building2, label: "City", count: "300+" },
-  { icon: TreePalm, label: "Island", count: "80+" },
-  { icon: Landmark, label: "Historical", count: "120+" },
-  { icon: Compass, label: "Adventure", count: "100+" },
+  { icon: Waves, label: "Beach", count: "" },
+  { icon: Mountain, label: "Mountain", count: "" },
+  { icon: Building2, label: "City", count: "" },
+  { icon: TreePalm, label: "Island", count: "" },
+  { icon: Landmark, label: "Historical", count: "" },
+  { icon: Compass, label: "Adventure", count: "" },
 ];
 
 const steps = [
@@ -156,7 +156,7 @@ const faqItems = [
   },
   {
     question: "Does TripMind work offline?",
-    answer: "Your generated itineraries are accessible offline through your trip dashboard. However, real-time features like AI chat assistance and live updates require an internet connection.",
+    answer: "Real-time features like AI chat assistance and itinerary generation require an internet connection. Your trip details can be viewed from your dashboard when offline.",
   },
   {
     question: "What destinations does TripMind support?",
@@ -391,7 +391,7 @@ export default function HomePage() {
                     <cat.icon className="h-6 w-6 text-primary-500" />
                   </div>
                   <span className="text-sm font-semibold text-slate-900">{cat.label}</span>
-                  <span className="text-xs text-slate-500">{cat.count} destinations</span>
+                  {cat.count && <span className="text-xs text-slate-500">{cat.count} destinations</span>}
                 </Link>
               </motion.div>
             ))}

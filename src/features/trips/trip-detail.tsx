@@ -167,7 +167,6 @@ export function TripDetail({ tripId }: TripDetailProps) {
   const isGenerating = generateMutation.isPending;
 
   const isPlanPurchased = paymentStatus?.isPlanPurchased ?? false;
-  const isPaymentPending = paymentStatus?.paymentStatus === "pending";
   const isCheckoutPending = createCheckout.isPending;
 
   return (
@@ -442,10 +441,10 @@ export function TripDetail({ tripId }: TripDetailProps) {
                     <Button
                       className="w-full justify-start"
                       onClick={handleCheckout}
-                      disabled={isCheckoutPending || isPaymentPending}
+                      disabled={isCheckoutPending}
                       leftIcon={isCheckoutPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
                     >
-                      {isCheckoutPending ? "Processing..." : isPaymentPending ? "Checkout Pending..." : "Buy AI Trip Plan"}
+                      {isCheckoutPending ? "Processing..." : "Buy AI Trip Plan"}
                     </Button>
                     <p className="text-[11px] text-slate-400 text-center">One-time payment &middot; No subscription</p>
                     {createCheckout.isError && (
