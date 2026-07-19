@@ -21,8 +21,13 @@ export function useNotifications(params?: NotificationQueryParams) {
 export function useRecentNotifications(limit = 5) {
   return useQuery({
     queryKey: [...NOTIFICATIONS_QUERY_KEY, "recent", limit],
-    queryFn: () => notificationService.getAll({ limit, sort: "-createdAt" }),
+    queryFn: () =>
+      notificationService.getAll({
+        limit,
+        sort: "newest",
+      }),
     staleTime: 30 * 1000,
+    retry: 1,
   });
 }
 

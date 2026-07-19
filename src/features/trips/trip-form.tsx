@@ -64,6 +64,10 @@ interface TripFormProps {
   preselectedDestinationSlug?: string;
 }
 
+function toIsoDate(date: string): string {
+  return new Date(`${date}T00:00:00.000Z`).toISOString();
+}
+
 export function TripForm({
   mode,
   initialData,
@@ -147,13 +151,13 @@ export function TripForm({
   const durationDays =
     watchedStartDate && watchedEndDate
       ? Math.max(
-          1,
-          Math.ceil(
-            (new Date(watchedEndDate).getTime() -
-              new Date(watchedStartDate).getTime()) /
-              (1000 * 60 * 60 * 24)
-          ) + 1
-        )
+        1,
+        Math.ceil(
+          (new Date(watchedEndDate).getTime() -
+            new Date(watchedStartDate).getTime()) /
+          (1000 * 60 * 60 * 24)
+        ) + 1
+      )
       : 0;
 
   const dailyBudget =
@@ -168,8 +172,8 @@ export function TripForm({
           const payload: CreateTripRequest = {
             destinationId: data.destinationId,
             title: data.title,
-            startDate: data.startDate,
-            endDate: data.endDate,
+            startDate: toIsoDate(data.startDate),
+            endDate: toIsoDate(data.endDate),
             travelers: data.travelers,
             budget: data.budget,
             currency: data.currency,
@@ -184,8 +188,8 @@ export function TripForm({
         } else if (initialData) {
           const payload: UpdateTripRequest = {
             title: data.title,
-            startDate: data.startDate,
-            endDate: data.endDate,
+            startDate: toIsoDate(data.startDate),
+            endDate: toIsoDate(data.endDate),
             travelers: data.travelers,
             budget: data.budget,
             currency: data.currency,
@@ -248,7 +252,7 @@ export function TripForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
-      {(mutationError || (createTrip.error || updateTrip.error)) && (
+      {mutationError && (
         <Alert variant="error" role="alert">
           {mutationError}
         </Alert>
