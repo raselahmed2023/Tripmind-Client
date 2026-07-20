@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useSyncExternalStore,
+} from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { MapPin } from "lucide-react";
 
@@ -11,6 +15,16 @@ interface AuthGuardProps {
   children: React.ReactNode;
   requireAuth?: boolean;
   requireAdmin?: boolean;
+}
+
+const subscribe = () => () => undefined;
+
+function useHasMounted(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
 }
 
 function AuthLoadingScreen() {
@@ -36,7 +50,7 @@ export function AuthGuard({
   requireAuth = true,
   requireAdmin = false,
 }: AuthGuardProps) {
-  const [hasMounted, setHasMounted] = useState(false);
+  const hasMounted = useHasMounted();
 
   const {
     user,
@@ -47,10 +61,6 @@ export function AuthGuard({
   const router = useRouter();
   const pathname = usePathname();
   const redirecting = useRef(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!hasMounted || isLoading || redirecting.current) {
@@ -79,12 +89,11 @@ export function AuthGuard({
     isAuthenticated,
     requireAuth,
     requireAdmin,
-    user,
+    user?.role,
     router,
     pathname,
   ]);
 
- 
   if (!hasMounted || isLoading) {
     return <AuthLoadingScreen />;
   }
